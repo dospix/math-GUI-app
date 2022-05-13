@@ -2,7 +2,7 @@ click==7.1.2
 designer==0.3.5
 Pillow==9.1.0
 pygame==2.1.2
-PyQt6==6.1.0
+PyQt6==6.3.0
 pyqt6-plugins==6.1.0.2.2
 PyQt6-Qt6==6.3.0
 PyQt6-sip==13.3.1
