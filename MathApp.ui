@@ -26,7 +26,7 @@
    <property name="styleSheet">
     <string notr="true"/>
    </property>
-   <layout class="QGridLayout" name="gridLayout_3">
+   <layout class="QGridLayout" name="mainWindowGridLayout">
     <property name="leftMargin">
      <number>0</number>
     </property>
@@ -43,7 +43,7 @@
      <number>0</number>
     </property>
     <item row="0" column="0">
-     <layout class="QGridLayout" name="gridLayout" rowstretch="1,2,20" columnstretch="0,0,0">
+     <layout class="QGridLayout" name="gridLayout" rowstretch="1,2,20" columnstretch="0,0">
       <property name="sizeConstraint">
        <enum>QLayout::SetDefaultConstraint</enum>
       </property>

@@ -9,7 +9,7 @@ class MathApp(QMainWindow):
 
         uic.loadUi("MathApp.ui", self)
 
-        self.mainWindowGrid = self.findChild(QGridLayout, "gridLayout_3")
+        self.mainWindowGrid = self.findChild(QGridLayout, "mainWindowGridLayout")
         self.mathAppGrid = self.findChild(QGridLayout, "gridLayout")
         self.currWindowLabel = self.findChild(QLabel, "currWindowLabel")
         self.algebraLabel = self.findChild(QLabel, "algebraLabel")
