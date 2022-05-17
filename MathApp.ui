@@ -43,7 +43,7 @@
      <number>0</number>
     </property>
     <item row="0" column="0">
-     <layout class="QGridLayout" name="gridLayout" rowstretch="2,2,5,5,5,5,5,5,5,5,5,5,5" columnstretch="0,0,0,0,0">
+     <layout class="QGridLayout" name="gridLayout" rowstretch="3,3,4,4,4,4,4,4,4,4,4,4,4" columnstretch="0,0,0,0,0">
       <property name="sizeConstraint">
        <enum>QLayout::SetDefaultConstraint</enum>
       </property>
@@ -394,7 +394,7 @@
       <item row="1" column="0">
        <widget class="QLabel" name="nameOfCurrWindowLabel">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
