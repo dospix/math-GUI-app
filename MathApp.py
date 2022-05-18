@@ -3,6 +3,8 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QFont
 from PyQt6 import uic
 import sys
+import sympy
+import traceback
 
 
 class MathApp(QMainWindow):
@@ -101,6 +103,36 @@ class MathApp(QMainWindow):
             for widget in self.polynomial_roots_calculator_widgets:
                 self.displayed_widgets.append(widget)
                 widget.show()
+
+    @staticmethod
+    def expand_expression(expression):
+        """Returns a tuple containing whether the expansion was successful
+        and in case it was the resulting expression."""
+
+        # using sympy on (x+1)(x-3) returns an error, but on (x+1)*(x-3) it doesn't
+        i = 0
+        length_of_expression = len(expression)
+        while i < length_of_expression - 1:
+            char = expression[i]
+            if char.isdigit() and expression[i + 1] in "x(":
+                expression = expression[:i + 1] + "*" + expression[i + 1:]
+                length_of_expression += 1
+            elif char in "x)" and (expression[i + 1].isdigit() or expression[i + 1] in "x("):
+                expression = expression[:i + 1] + "*" + expression[i + 1:]
+                length_of_expression += 1
+            i += 1
+
+        # sympy raises an exception if you use '^' as the exponentiation operator
+        expression = expression.replace("^", "**")
+
+        try:
+            expression = sympy.parse_expr(expression)
+            expression = sympy.expand(expression)
+        except Exception:
+            print(traceback.format_exc())
+            return False, ""
+
+        return True, expression
 
     def calculate_roots_for_polynomial(self):
         self.clear_temporary_widgets()
@@ -240,6 +272,22 @@ class MathApp(QMainWindow):
                 warning.setSizePolicy(self.minimum_size_policy)
                 self.temporary_widgets.append(warning)
                 self.mathAppGrid.addWidget(warning, 9, 1, 1, 3)
+
+        if warning is not None:
+            return
+
+        successful_expansion, expression = self.expand_expression(equation[2:])
+
+        if not successful_expansion:
+            warning = QLabel(self)
+            warning.setText("The expression could not be expanded")
+            warning.setStyleSheet("color: red;")
+            warning.setFont(self.main_font)
+            warning.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            warning.setSizePolicy(self.minimum_size_policy)
+            self.temporary_widgets.append(warning)
+            self.mathAppGrid.addWidget(warning, 9, 1, 1, 3)
+            return
 
 
 if __name__ == "__main__":
