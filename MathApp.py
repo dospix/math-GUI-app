@@ -104,56 +104,6 @@ class MathApp(QMainWindow):
                 self.displayed_widgets.append(widget)
                 widget.show()
 
-    @staticmethod
-    def expand_expression(expression):
-        """Returns a tuple containing whether the expansion was successful
-        and in case it was the resulting expression."""
-
-        # using sympy on (x+1)(x-3) returns an error, but on (x+1)*(x-3) it doesn't
-        i = 0
-        length_of_expression = len(expression)
-        while i < length_of_expression - 1:
-            char = expression[i]
-            if char.isdigit() and expression[i + 1] in "x(":
-                expression = expression[:i + 1] + "*" + expression[i + 1:]
-                length_of_expression += 1
-            elif char in "x)" and (expression[i + 1].isdigit() or expression[i + 1] in "x("):
-                expression = expression[:i + 1] + "*" + expression[i + 1:]
-                length_of_expression += 1
-            i += 1
-
-        # sympy raises an exception if you use '^' as the exponentiation operator
-        expression = expression.replace("^", "**")
-
-        try:
-            expression = sympy.parse_expr(expression)
-            expression = sympy.expand(expression)
-        except Exception:
-            print(traceback.format_exc())
-            return False, ""
-
-        return True, expression
-
-    @staticmethod
-    def is_quadratic(expression):
-        """Returns True or False depending on whether expression is quadratic or not.
-        Expressions containing x^1 and/or constants are considered quadratic.
-        Negative exponents are assumed to be written in this format: x^(-n).
-        This function only works if expression only contains the variable x and if '^' is the exponentiation sign."""
-
-        length_expression = len(expression)
-        for i in range(length_expression - 1):
-            if expression[i] == "^":
-                if expression[i + 1].isdigit():
-                    if int(expression[i + 1]) > 2:
-                        return False
-                    elif i < length_expression - 2 and expression[i + 2].isdigit():
-                        return False
-                elif expression[i + 1:i + 3] == "(-":
-                    return False
-
-        return True
-
     def calculate_roots_for_polynomial(self):
         self.clear_temporary_widgets()
 
@@ -314,6 +264,56 @@ class MathApp(QMainWindow):
 
         if not self.is_quadratic(expression):
             return
+
+    @staticmethod
+    def expand_expression(expression):
+        """Returns a tuple containing whether the expansion was successful
+        and in case it was the resulting expression."""
+
+        # using sympy on (x+1)(x-3) returns an error, but on (x+1)*(x-3) it doesn't
+        i = 0
+        length_of_expression = len(expression)
+        while i < length_of_expression - 1:
+            char = expression[i]
+            if char.isdigit() and expression[i + 1] in "x(":
+                expression = expression[:i + 1] + "*" + expression[i + 1:]
+                length_of_expression += 1
+            elif char in "x)" and (expression[i + 1].isdigit() or expression[i + 1] in "x("):
+                expression = expression[:i + 1] + "*" + expression[i + 1:]
+                length_of_expression += 1
+            i += 1
+
+        # sympy raises an exception if you use '^' as the exponentiation operator
+        expression = expression.replace("^", "**")
+
+        try:
+            expression = sympy.parse_expr(expression)
+            expression = sympy.expand(expression)
+        except Exception:
+            print(traceback.format_exc())
+            return False, ""
+
+        return True, expression
+
+    @staticmethod
+    def is_quadratic(expression):
+        """Returns True or False depending on whether expression is quadratic or not.
+        Expressions containing x^1 and/or constants are considered quadratic.
+        Negative exponents are assumed to be written in this format: x^(-n).
+        This function only works if expression only contains the variable x and if '^' is the exponentiation sign."""
+
+        length_expression = len(expression)
+        for i in range(length_expression - 1):
+            if expression[i] == "^":
+                if expression[i + 1].isdigit():
+                    if int(expression[i + 1]) > 2:
+                        return False
+                    elif i < length_expression - 2 and expression[i + 2].isdigit():
+                        return False
+                elif expression[i + 1:i + 3] == "(-":
+                    return False
+
+        return True
 
 
 if __name__ == "__main__":
