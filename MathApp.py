@@ -134,6 +134,26 @@ class MathApp(QMainWindow):
 
         return True, expression
 
+    @staticmethod
+    def is_quadratic(expression):
+        """Returns True or False depending on whether expression is quadratic or not.
+        Expressions containing x^1 and/or constants are considered quadratic.
+        Negative exponents are assumed to be written in this format: x^(-n).
+        This function only works if expression only contains the variable x and if '^' is the exponentiation sign."""
+
+        length_expression = len(expression)
+        for i in range(length_expression - 1):
+            if expression[i] == "^":
+                if expression[i + 1].isdigit():
+                    if int(expression[i + 1]) > 2:
+                        return False
+                    elif i < length_expression - 2 and expression[i + 2].isdigit():
+                        return False
+                elif expression[i + 1:i + 3] == "(-":
+                    return False
+
+        return True
+
     def calculate_roots_for_polynomial(self):
         self.clear_temporary_widgets()
 
@@ -287,6 +307,12 @@ class MathApp(QMainWindow):
             warning.setSizePolicy(self.minimum_size_policy)
             self.temporary_widgets.append(warning)
             self.mathAppGrid.addWidget(warning, 9, 1, 1, 3)
+            return
+
+        expression = str(expression)
+        expression = expression.replace("**", "^")
+
+        if not self.is_quadratic(expression):
             return
 
 
