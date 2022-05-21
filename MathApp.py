@@ -269,35 +269,7 @@ class MathApp(QMainWindow):
         if not self.is_quadratic(expression):
             return
 
-        x_squared_coeff_regex = re.compile("(\d*)\*?x\^2")
-        x_coeff_regex = re.compile("(\d*)\*?x[^\^]|(\d*)\*?x$")
-        constant_coeff_regex = re.compile("[^\^](\d+)$|^(\d+)$|(a)")
-
-        regex_matches = x_squared_coeff_regex.findall(expression)
-        if len(regex_matches) == 0:
-            x_squared_coeff = 0
-        else:
-            if regex_matches[0] == "":
-                x_squared_coeff = 1
-            else:
-                x_squared_coeff = int(regex_matches[0])
-
-        regex_matches = x_coeff_regex.findall(expression)
-        if len(regex_matches) == 0:
-            x_coeff = 0
-        else:
-            x_coeff = 1
-            for group_matched in regex_matches[0]:
-                if len(group_matched) > 0:
-                    x_coeff = int(group_matched)
-
-        regex_matches = constant_coeff_regex.findall(expression)
-        if len(regex_matches) == 0:
-            constant_coeff = 0
-        else:
-            for group_matched in regex_matches[0]:
-                if len(group_matched) > 0:
-                    constant_coeff = int(group_matched)
+        x_squared_coeff, x_coeff, constant_coeff = self.extract_coefficients_from_quadratic(expression)
 
     @staticmethod
     def expand_expression(expression):
@@ -348,6 +320,41 @@ class MathApp(QMainWindow):
                     return False
 
         return True
+
+    @staticmethod
+    def extract_coefficients_from_quadratic(expression):
+        x_squared_coeff_regex = re.compile("(\d*)\*?x\^2")
+        x_coeff_regex = re.compile("(\d*)\*?x[^\^]|(\d*)\*?x$")
+        constant_coeff_regex = re.compile("[^\^](\d+)$|^(\d+)$|(a)")
+
+        regex_matches = x_squared_coeff_regex.findall(expression)
+        if len(regex_matches) == 0:
+            x_squared_coeff = 0
+        else:
+            if regex_matches[0] == "":
+                x_squared_coeff = 1
+            else:
+                x_squared_coeff = int(regex_matches[0])
+
+        regex_matches = x_coeff_regex.findall(expression)
+        if len(regex_matches) == 0:
+            x_coeff = 0
+        else:
+            x_coeff = 1
+            for group_matched in regex_matches[0]:
+                if len(group_matched) > 0:
+                    x_coeff = int(group_matched)
+
+        regex_matches = constant_coeff_regex.findall(expression)
+        if len(regex_matches) == 0:
+            constant_coeff = 0
+        else:
+            for group_matched in regex_matches[0]:
+                if len(group_matched) > 0:
+                    constant_coeff = int(group_matched)
+
+        return x_squared_coeff, x_coeff, constant_coeff
+
 
 
 if __name__ == "__main__":
