@@ -204,6 +204,9 @@ class MathApp(QMainWindow):
                         improper_syntax = True
                         break
 
+            if equation[length_of_equation - 1] in "+-*/^.":
+                improper_syntax = True
+
             if improper_syntax:
                 warning = QLabel(self)
                 warning.setText("Improper syntax. Please check that you've written your equation correctly")
