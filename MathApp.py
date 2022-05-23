@@ -393,7 +393,6 @@ class MathApp(QMainWindow):
         return x_squared_coeff, x_coeff, constant_coeff
 
 
-
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     UIWindow = MathApp()
