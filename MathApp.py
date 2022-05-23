@@ -279,6 +279,35 @@ class MathApp(QMainWindow):
 
         x_squared_coeff, x_coeff, constant_coeff = self.extract_coefficients_from_quadratic(expression)
 
+        if x_squared_coeff == 0 and x_coeff == 0:
+            if constant_coeff != 0:
+                result_label = QLabel(self)
+                result_label.setText("This equation has no solutions!")
+                result_label.setStyleSheet("color: red;")
+                result_label.setFont(self.main_font)
+                result_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+                result_label.setSizePolicy(self.minimum_size_policy)
+                self.temporary_widgets.append(result_label)
+                self.mathAppGrid.addWidget(result_label, 10, 1, 1, 3)
+            else:
+                result_label = QLabel(self)
+                result_label.setText("There are an infinite amount of roots!")
+                result_label.setFont(self.main_font)
+                result_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+                result_label.setSizePolicy(self.minimum_size_policy)
+                self.temporary_widgets.append(result_label)
+                self.mathAppGrid.addWidget(result_label, 10, 1, 1, 3)
+
+        elif x_squared_coeff == 0:
+            result = -(constant_coeff / x_coeff)
+            result_label = QLabel(self)
+            result_label.setText("The root for this linear equation is x=" + str(result))
+            result_label.setFont(self.main_font)
+            result_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            result_label.setSizePolicy(self.minimum_size_policy)
+            self.temporary_widgets.append(result_label)
+            self.mathAppGrid.addWidget(result_label, 10, 1, 1, 3)
+
     @staticmethod
     def expand_expression(expression):
         """Returns a tuple containing whether the expansion was successful
