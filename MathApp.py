@@ -269,6 +269,14 @@ class MathApp(QMainWindow):
         if not self.is_quadratic(expression):
             return
 
+        expanded_equation_label = QLabel(self)
+        expanded_equation_label.setText("The equation was expanded to: y=" + str(expression))
+        expanded_equation_label.setFont(self.main_font)
+        expanded_equation_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        expanded_equation_label.setSizePolicy(self.minimum_size_policy)
+        self.temporary_widgets.append(expanded_equation_label)
+        self.mathAppGrid.addWidget(expanded_equation_label, 9, 1, 1, 3)
+
         x_squared_coeff, x_coeff, constant_coeff = self.extract_coefficients_from_quadratic(expression)
 
     @staticmethod
