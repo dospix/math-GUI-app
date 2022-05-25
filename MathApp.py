@@ -361,9 +361,9 @@ class MathApp(QMainWindow):
 
     @staticmethod
     def extract_coefficients_from_quadratic(expression):
-        x_squared_coeff_regex = re.compile("(\d*)\*?x\^2")
-        x_coeff_regex = re.compile("(\d*)\*?x[^\^]|(\d*)\*?x$")
-        constant_coeff_regex = re.compile("[^\^](\d+)$|^(\d+)$|(a)")
+        x_squared_coeff_regex = re.compile("(-?\d*)\*?x\^2")
+        x_coeff_regex = re.compile("(-?\d*)\*?x[^\^]|(-?\d*)\*?x$")
+        constant_coeff_regex = re.compile("[^\^](-?\d+)$|^(-?\d+)$")
 
         regex_matches = x_squared_coeff_regex.findall(expression)
         if len(regex_matches) == 0:
@@ -371,6 +371,8 @@ class MathApp(QMainWindow):
         else:
             if regex_matches[0] == "":
                 x_squared_coeff = 1
+            elif regex_matches[0] == "-":
+                x_squared_coeff = -1
             else:
                 x_squared_coeff = int(regex_matches[0])
 
@@ -381,7 +383,10 @@ class MathApp(QMainWindow):
             x_coeff = 1
             for group_matched in regex_matches[0]:
                 if len(group_matched) > 0:
-                    x_coeff = int(group_matched)
+                    if group_matched != "-":
+                        x_coeff = int(group_matched)
+                    else:
+                        x_coeff = -1
 
         regex_matches = constant_coeff_regex.findall(expression)
         if len(regex_matches) == 0:
