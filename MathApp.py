@@ -263,9 +263,6 @@ class MathApp(QMainWindow):
             self.mathAppGrid.addWidget(warning, 9, 1, 1, 3)
             return
 
-        expression = str(expression)
-        expression = expression.replace("**", "^")
-
         if not self.is_quadratic(expression):
             return
 
@@ -335,6 +332,10 @@ class MathApp(QMainWindow):
         except Exception:
             print(traceback.format_exc())
             return False, ""
+
+        expression = str(expression)
+        expression = expression.replace(" ", "")
+        expression = expression.replace("**", "^")
 
         return True, expression
 
