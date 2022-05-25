@@ -276,6 +276,8 @@ class MathApp(QMainWindow):
 
         x_squared_coeff, x_coeff, constant_coeff = self.extract_coefficients_from_quadratic(expression)
 
+        print(x_squared_coeff, x_coeff, constant_coeff)
+
         if x_squared_coeff == 0 and x_coeff == 0:
             if constant_coeff != 0:
                 result_label = QLabel(self)
@@ -363,7 +365,7 @@ class MathApp(QMainWindow):
     def extract_coefficients_from_quadratic(expression):
         x_squared_coeff_regex = re.compile("(-?\d*)\*?x\^2")
         x_coeff_regex = re.compile("(-?\d*)\*?x[^\^]|(-?\d*)\*?x$")
-        constant_coeff_regex = re.compile("[^\^](-?\d+)$|^(-?\d+)$")
+        constant_coeff_regex = re.compile("[^\^](-?\d+)$|^(-?\d+)$|^(\d+)-")
 
         regex_matches = x_squared_coeff_regex.findall(expression)
         if len(regex_matches) == 0:
