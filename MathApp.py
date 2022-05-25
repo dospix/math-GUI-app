@@ -276,68 +276,26 @@ class MathApp(QMainWindow):
 
         x_squared_coeff, x_coeff, constant_coeff = self.extract_coefficients_from_quadratic(expression)
 
-        if x_squared_coeff == 0 and x_coeff == 0:
-            if constant_coeff != 0:
-                result_label = QLabel(self)
-                result_label.setText("This equation has no solutions!")
-                result_label.setStyleSheet("color: red;")
-                result_label.setFont(self.main_font)
-                result_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-                result_label.setSizePolicy(self.minimum_size_policy)
-                self.temporary_widgets.append(result_label)
-                self.mathAppGrid.addWidget(result_label, 10, 1, 1, 3)
-            else:
-                result_label = QLabel(self)
-                result_label.setText("There are an infinite amount of roots!")
-                result_label.setFont(self.main_font)
-                result_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-                result_label.setSizePolicy(self.minimum_size_policy)
-                self.temporary_widgets.append(result_label)
-                self.mathAppGrid.addWidget(result_label, 10, 1, 1, 3)
+        result = self.find_roots_of_quadratic(x_squared_coeff, x_coeff, constant_coeff)
 
+        result_label = QLabel(self)
+        if result is None:
+            result_label.setText("This equation has no solutions!")
+            result_label.setStyleSheet("color: red;")
+        elif result == "infinite":
+            result_label.setText("There are an infinite amount of roots!")
         elif x_squared_coeff == 0:
-            result = -(constant_coeff / x_coeff)
-            if result == int(result):
-                result = int(result)
-            result_label = QLabel(self)
             result_label.setText("The root for this linear equation is x=" + str(result))
-            result_label.setFont(self.main_font)
-            result_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-            result_label.setSizePolicy(self.minimum_size_policy)
-            self.temporary_widgets.append(result_label)
-            self.mathAppGrid.addWidget(result_label, 10, 1, 1, 3)
-
+        elif not hasattr(result, '__iter__'):
+            result_label.setText("This quadratic equation only has 1 root, which is x=" + str(result))
         else:
-            a = x_squared_coeff
-            b = x_coeff
-            c = constant_coeff
-
-            delta = b ** 2 - 4 * a * c
-            x1 = (-b + delta**0.5) / (2*a)
-            x2 = (-b - delta**0.5) / (2*a)
-
-            if x1.imag and x2.imag:
-                x1 = complex(round(x1.real, 4), round(x1.imag, 4))
-                x2 = complex(round(x2.real, 4), round(x2.imag, 4))
-            else:
-                x1 = round(x1, 4)
-                x2 = round(x2, 4)
-
-                if x1 == int(x1):
-                    x1 = int(x1)
-                if x2 == int(x2):
-                    x2 = int(x2)
-
-            result_label = QLabel(self)
-            if x1 != x2:
-                result_label.setText("The roots for this quadratic equation are x1=" + str(x1) + " and x2=" + str(x2))
-            else:
-                result_label.setText("This quadratic equation only has 1 root, which is x=" + str(x1))
-            result_label.setFont(self.main_font)
-            result_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-            result_label.setSizePolicy(self.minimum_size_policy)
-            self.temporary_widgets.append(result_label)
-            self.mathAppGrid.addWidget(result_label, 10, 1, 1, 3)
+            result_label.setText("The roots for this quadratic equation are x1=" + str(result[0]) +
+                                 " and x2=" + str(result[1]))
+        result_label.setFont(self.main_font)
+        result_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        result_label.setSizePolicy(self.minimum_size_policy)
+        self.temporary_widgets.append(result_label)
+        self.mathAppGrid.addWidget(result_label, 10, 1, 1, 3)
 
     @staticmethod
     def expand_expression(expression):
@@ -431,6 +389,55 @@ class MathApp(QMainWindow):
                     constant_coeff = int(group_matched)
 
         return x_squared_coeff, x_coeff, constant_coeff
+
+    @staticmethod
+    def find_roots_of_quadratic(x_squared_coeff, x_coeff, constant_coeff):
+        """Returns the roots of a polynomial(quadratic or lower degree), only using the coefficients of its terms.
+        Examples:
+        y=6(x_squared_coeff=0, x_coeff=0, constant_coeff=6) -> None (no values of x can make y=0)
+        y=0(x_squared_coeff=0, x_coeff=0, constant_coeff=0) -> 'infinite' (all values of x can make y=0)
+        y=-3x + 6(x_squared_coeff=0, x_coeff=-3, constant_coeff=6) -> 2 (only x=2 can make y=0)
+        y=2x^2 - 8x + 6 (x_squared_coeff=2, x_coeff=-8, constant_coeff=6) -> (3, 1) (only x=3 and x=1 can make y=0)
+        y=4x^2 - 12x + 9(x_squared_coeff=4, x_coeff=-12, constant_coeff=9) -> 1.5 (only x=1.5 can make y=0)"""
+        if x_squared_coeff == 0 and x_coeff == 0:
+            if constant_coeff != 0:
+                return None
+            else:
+                return "infinite"
+
+        elif x_squared_coeff == 0:
+            result = -(constant_coeff / x_coeff)
+            result = round(result, 4)
+            if result == int(result):
+                result = int(result)
+
+            return result
+
+        else:
+            a = x_squared_coeff
+            b = x_coeff
+            c = constant_coeff
+
+            delta = b ** 2 - 4 * a * c
+            x1 = (-b + delta**0.5) / (2*a)
+            x2 = (-b - delta**0.5) / (2*a)
+
+            if x1.imag and x2.imag:
+                x1 = complex(round(x1.real, 4), round(x1.imag, 4))
+                x2 = complex(round(x2.real, 4), round(x2.imag, 4))
+            else:
+                x1 = round(x1, 4)
+                x2 = round(x2, 4)
+
+                if x1 == int(x1):
+                    x1 = int(x1)
+                if x2 == int(x2):
+                    x2 = int(x2)
+
+            if x1 != x2:
+                return x1, x2
+            else:
+                return x1
 
 
 if __name__ == "__main__":
