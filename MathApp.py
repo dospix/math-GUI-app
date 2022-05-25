@@ -276,8 +276,6 @@ class MathApp(QMainWindow):
 
         x_squared_coeff, x_coeff, constant_coeff = self.extract_coefficients_from_quadratic(expression)
 
-        print(x_squared_coeff, x_coeff, constant_coeff)
-
         if x_squared_coeff == 0 and x_coeff == 0:
             if constant_coeff != 0:
                 result_label = QLabel(self)
@@ -299,8 +297,42 @@ class MathApp(QMainWindow):
 
         elif x_squared_coeff == 0:
             result = -(constant_coeff / x_coeff)
+            if result == int(result):
+                result = int(result)
             result_label = QLabel(self)
             result_label.setText("The root for this linear equation is x=" + str(result))
+            result_label.setFont(self.main_font)
+            result_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            result_label.setSizePolicy(self.minimum_size_policy)
+            self.temporary_widgets.append(result_label)
+            self.mathAppGrid.addWidget(result_label, 10, 1, 1, 3)
+
+        else:
+            a = x_squared_coeff
+            b = x_coeff
+            c = constant_coeff
+
+            delta = b ** 2 - 4 * a * c
+            x1 = (-b + delta**0.5) / (2*a)
+            x2 = (-b - delta**0.5) / (2*a)
+
+            if x1.imag and x2.imag:
+                x1 = complex(round(x1.real, 4), round(x1.imag, 4))
+                x2 = complex(round(x2.real, 4), round(x2.imag, 4))
+            else:
+                x1 = round(x1, 4)
+                x2 = round(x2, 4)
+
+                if x1 == int(x1):
+                    x1 = int(x1)
+                if x2 == int(x2):
+                    x2 = int(x2)
+
+            result_label = QLabel(self)
+            if x1 != x2:
+                result_label.setText("The roots for this quadratic equation are x1=" + str(x1) + " and x2=" + str(x2))
+            else:
+                result_label.setText("This quadratic equation only has 1 root, which is x=" + str(x1))
             result_label.setFont(self.main_font)
             result_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
             result_label.setSizePolicy(self.minimum_size_policy)
