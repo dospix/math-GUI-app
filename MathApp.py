@@ -305,7 +305,8 @@ class MathApp(QMainWindow):
         """Returns True or False depending on whether expression is quadratic or not.
         Expressions containing x^1 and/or constants are considered quadratic.
         Negative exponents are assumed to be written in this format: x^(-n).
-        This function only works if expression only contains the variable x and if '^' is the exponentiation sign."""
+        This function only works if expression has correct syntax, only contains the variable x and
+        if '^' is the exponentiation sign."""
 
         length_expression = len(expression)
         for i in range(length_expression - 1):
@@ -313,8 +314,11 @@ class MathApp(QMainWindow):
                 if expression[i + 1].isdigit():
                     if int(expression[i + 1]) > 2:
                         return False
-                    elif i < length_expression - 2 and expression[i + 2].isdigit():
-                        return False
+                    elif i < length_expression - 2:
+                        if expression[i + 2].isdigit():
+                            return False
+                        elif expression[i + 2] == ".":
+                            return False
                 elif expression[i + 1:i + 3] == "(-":
                     return False
 
