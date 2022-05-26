@@ -111,156 +111,48 @@ class MathApp(QMainWindow):
         equation = self.polynomialRootsEquationInsertionLineEdit.text()
         equation = equation.replace(" ", "")
 
-        warning = None
-        if equation[:2] != "y=":
-            warning = QLabel(self)
-            warning.setText("Please enter equations in the form 'y=...'")
-            warning.setStyleSheet("color: red;")
-            warning.setFont(self.main_font)
-            warning.setAlignment(Qt.AlignmentFlag.AlignCenter)
-            warning.setSizePolicy(self.minimum_size_policy)
-            self.temporary_widgets.append(warning)
-            self.mathAppGrid.addWidget(warning, 9, 1, 1, 3)
+        warning = self.check_equation_mistakes(equation)
+        if not warning == "equation is correct":
+            warning_label = QLabel(self)
+            warning_label.setStyleSheet("color: red;")
+            warning_label.setFont(self.main_font)
+            warning_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            warning_label.setSizePolicy(self.minimum_size_policy)
+            self.temporary_widgets.append(warning_label)
 
-        if warning is None:
-            if len(equation) == 2:
-                warning = QLabel(self)
-                warning.setText("Please enter an expression to the right of the equal sign")
-                warning.setStyleSheet("color: red;")
-                warning.setFont(self.main_font)
-                warning.setAlignment(Qt.AlignmentFlag.AlignCenter)
-                warning.setSizePolicy(self.minimum_size_policy)
-                self.temporary_widgets.append(warning)
-                self.mathAppGrid.addWidget(warning, 9, 1, 1, 3)
+            if warning == "no 'y=' at beginning":
+                warning_label.setText("Please enter equations in the form 'y=...'")
+            elif warning == "no expression after equal sign":
+                warning_label.setText("Please enter an expression to the right of the equal sign")
+            elif warning == "y is not isolated on the left side":
+                warning_label.setText("Please isolate the y variable on the left side of the equation")
+            elif warning == "multiple equal signs":
+                warning_label.setText("There are multiple equal signs in your equation")
+            elif warning == "variables other than x and y in equation":
+                warning_label.setText("Please only use lowercase x and y as variables in your equation, "
+                                      "where x is the independent variable")
+            elif warning == "illegal characters in equation":
+                warning_label.setText("Illegal characters used. Please only use x, y, numbers with/without decimals, "
+                                      "the equal sign, parentheses and the +, -, *, /, ^ operators")
+            elif warning == "improper syntax":
+                warning_label.setText("Improper syntax. Please check that you've written your equation correctly")
+            elif warning == "closing parenthesis with no matching open parenthesis":
+                warning_label.setText("You've used a closing parenthesis that doesn't have a matching open parenthesis")
+            elif warning == "unclosed parentheses":
+                warning_label.setText("You have unclosed parentheses")
 
-        if warning is None:
-            if "y" in equation[2:]:
-                warning = QLabel(self)
-                warning.setText("Please isolate the y variable on the left side of the equation")
-                warning.setStyleSheet("color: red;")
-                warning.setFont(self.main_font)
-                warning.setAlignment(Qt.AlignmentFlag.AlignCenter)
-                warning.setSizePolicy(self.minimum_size_policy)
-                self.temporary_widgets.append(warning)
-                self.mathAppGrid.addWidget(warning, 9, 1, 1, 3)
+            # the 'illegal characters in equation' warning is too big to fit 3 columns
+            if warning != "illegal characters in equation":
+                self.mathAppGrid.addWidget(warning_label, 9, 1, 1, 3)
+            else:
+                self.mathAppGrid.addWidget(warning_label, 9, 0, 1, 5)
 
-        if warning is None:
-            if equation.count("=") > 1:
-                warning = QLabel(self)
-                warning.setText("There are multiple equal signs in your equation")
-                warning.setStyleSheet("color: red;")
-                warning.setFont(self.main_font)
-                warning.setAlignment(Qt.AlignmentFlag.AlignCenter)
-                warning.setSizePolicy(self.minimum_size_policy)
-                self.temporary_widgets.append(warning)
-                self.mathAppGrid.addWidget(warning, 9, 1, 1, 3)
-
-        if warning is None:
-            for char in equation:
-                if char.isalpha() and char not in ["x", "y"]:
-                    warning = QLabel(self)
-                    warning.setText("Please only use lowercase x and y as variables in your equation, "
-                                    "where x is the independent variable")
-                    warning.setStyleSheet("color: red;")
-                    warning.setFont(self.main_font)
-                    warning.setAlignment(Qt.AlignmentFlag.AlignCenter)
-                    warning.setSizePolicy(self.minimum_size_policy)
-                    self.temporary_widgets.append(warning)
-                    self.mathAppGrid.addWidget(warning, 9, 1, 1, 3)
-                    break
-
-        if warning is None:
-            for char in equation:
-                if char not in "xy0123456789.=()+-*/^":
-                    warning = QLabel(self)
-                    warning.setText("Illegal characters used. Please only use x, y, numbers with/without decimals, "
-                                    "the equal sign, parentheses and the +, -, *, /, ^ operators")
-                    warning.setStyleSheet("color: red;")
-                    warning.setFont(self.main_font)
-                    warning.setAlignment(Qt.AlignmentFlag.AlignCenter)
-                    warning.setSizePolicy(self.minimum_size_policy)
-                    self.temporary_widgets.append(warning)
-                    self.mathAppGrid.addWidget(warning, 9, 0, 1, 5)
-                    break
-
-        if warning is None:
-            improper_syntax = False
-            length_of_equation = len(equation)
-            for i, char in enumerate(equation):
-                if i < length_of_equation - 1:
-                    if char == "=" and not (equation[i + 1].isdigit() or equation[i + 1] in "x(+-"):
-                        improper_syntax = True
-                        break
-                    if char in "+-*/^" and not (equation[i + 1].isdigit() or equation[i + 1] in "x(+-"):
-                        improper_syntax = True
-                        break
-                    if char == "(" and not (equation[i + 1].isdigit() or equation[i + 1] in "x(+-"):
-                        improper_syntax = True
-                        break
-                    if char == "x" and equation[i + 1] == ".":
-                        improper_syntax = True
-                        break
-                    if char == "." and not equation[i + 1].isdigit():
-                        improper_syntax = True
-                        break
-
-            if equation[length_of_equation - 1] in "+-*/^.":
-                improper_syntax = True
-
-            if improper_syntax:
-                warning = QLabel(self)
-                warning.setText("Improper syntax. Please check that you've written your equation correctly")
-                warning.setStyleSheet("color: red;")
-                warning.setFont(self.main_font)
-                warning.setAlignment(Qt.AlignmentFlag.AlignCenter)
-                warning.setSizePolicy(self.minimum_size_policy)
-                self.temporary_widgets.append(warning)
-                self.mathAppGrid.addWidget(warning, 9, 1, 1, 3)
-
-        if warning is None:
-            open_parentheses_count = 0
-
-            for char in equation:
-                if char == "(":
-                    open_parentheses_count += 1
-                elif char == ")":
-                    open_parentheses_count -= 1
-
-                if open_parentheses_count < 0:
-                    warning = QLabel(self)
-                    warning.setText("You've used a closing parenthesis that doesn't have a matching open parenthesis")
-                    warning.setStyleSheet("color: red;")
-                    warning.setFont(self.main_font)
-                    warning.setAlignment(Qt.AlignmentFlag.AlignCenter)
-                    warning.setSizePolicy(self.minimum_size_policy)
-                    self.temporary_widgets.append(warning)
-                    self.mathAppGrid.addWidget(warning, 9, 1, 1, 3)
-                    break
-
-            if warning is None and open_parentheses_count > 0:
-                warning = QLabel(self)
-                warning.setText("You have unclosed parentheses")
-                warning.setStyleSheet("color: red;")
-                warning.setFont(self.main_font)
-                warning.setAlignment(Qt.AlignmentFlag.AlignCenter)
-                warning.setSizePolicy(self.minimum_size_policy)
-                self.temporary_widgets.append(warning)
-                self.mathAppGrid.addWidget(warning, 9, 1, 1, 3)
-
-        if warning is not None:
             return
 
         successful_expansion, expression = self.expand_expression(equation[2:])
 
         if not successful_expansion:
-            warning = QLabel(self)
             warning.setText("The expression could not be expanded")
-            warning.setStyleSheet("color: red;")
-            warning.setFont(self.main_font)
-            warning.setAlignment(Qt.AlignmentFlag.AlignCenter)
-            warning.setSizePolicy(self.minimum_size_policy)
-            self.temporary_widgets.append(warning)
-            self.mathAppGrid.addWidget(warning, 9, 1, 1, 3)
             return
 
         if not self.is_quadratic(expression):
@@ -296,6 +188,83 @@ class MathApp(QMainWindow):
         result_label.setSizePolicy(self.minimum_size_policy)
         self.temporary_widgets.append(result_label)
         self.mathAppGrid.addWidget(result_label, 10, 1, 1, 3)
+
+    @staticmethod
+    def check_equation_mistakes(equation):
+        """Returns a string representing the problem with how equation was written or 'equation is correct' if there
+        are no mistakes.
+        Cases:
+        'x^2+3x+4' -> 'no 'y=' at beginning'
+        'y=' -> 'no expression after equal sign'
+        'y=x-y' -> 'y is not isolated on the left side'
+        'y==' -> 'multiple equal signs'
+        'y=a^2+3a+4' -> 'variables other than x and y in equation'
+        'y=35%' -> 'illegal characters in equation'
+        'y=35*)' -> 'improper syntax'
+        'y=35)+5' -> 'closing parenthesis with no matching open parenthesis'
+        'y=(35+5' -> 'unclosed parentheses'
+        'y=x^2+3x+4' -> 'equation is correct'"""
+
+        if equation[:2] != "y=":
+            return "no 'y=' at beginning"
+
+        if len(equation) == 2:
+            return "no expression after equal sign"
+
+        if "y" in equation[2:]:
+            return "y is not isolated on the left side"
+
+        if equation.count("=") > 1:
+            return "multiple equal signs"
+
+        for char in equation:
+            if char.isalpha() and char not in ["x", "y"]:
+                return "variables other than x and y in equation"
+
+        for char in equation:
+            if char not in "xy0123456789.=()+-*/^":
+                return "illegal characters in equation"
+
+        improper_syntax = False
+        length_of_equation = len(equation)
+        for i, char in enumerate(equation):
+            if i < length_of_equation - 1:
+                if char == "=" and not (equation[i + 1].isdigit() or equation[i + 1] in "x(+-"):
+                    improper_syntax = True
+                    break
+                if char in "+-*/^" and not (equation[i + 1].isdigit() or equation[i + 1] in "x(+-"):
+                    improper_syntax = True
+                    break
+                if char == "(" and not (equation[i + 1].isdigit() or equation[i + 1] in "x(+-"):
+                    improper_syntax = True
+                    break
+                if char == "x" and equation[i + 1] == ".":
+                    improper_syntax = True
+                    break
+                if char == "." and not equation[i + 1].isdigit():
+                    improper_syntax = True
+                    break
+
+        if equation[length_of_equation - 1] in "+-*/^.":
+            improper_syntax = True
+
+        if improper_syntax:
+            return "improper syntax"
+
+        open_parentheses_count = 0
+        for char in equation:
+            if char == "(":
+                open_parentheses_count += 1
+            elif char == ")":
+                open_parentheses_count -= 1
+
+            if open_parentheses_count < 0:
+                return "closing parenthesis with no matching open parenthesis"
+
+        if open_parentheses_count > 0:
+            return "unclosed parentheses"
+
+        return "equation is correct"
 
     @staticmethod
     def expand_expression(expression):
