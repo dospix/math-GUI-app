@@ -228,6 +228,64 @@ class MathApp(QMainWindow):
         self.mathAppGrid.addWidget(result_label, 10, 1, 1, 3)
 
     @staticmethod
+    def check_expression_mistakes(expression):
+        """Returns a string representing the problem with how expression was written or 'expression is correct' if there
+        are no mistakes.
+        Cases:
+        'a^2+3a+4' -> 'variables other than x in expression'
+        '35%' -> 'illegal characters in expression'
+        '35*)' -> 'improper syntax'
+        '35)+5' -> 'closing parenthesis with no matching open parenthesis'
+        '(35+5' -> 'unclosed parentheses'
+        'x^2+3x+4' -> 'expression is correct'"""
+
+        for char in expression:
+            if char.isalpha() and char != "x":
+                return "variables other than x in expression"
+
+        for char in expression:
+            if char not in "x0123456789.()+-*/^":
+                return "illegal characters in expression"
+
+        improper_syntax = False
+        length_of_expression = len(expression)
+        for i, char in enumerate(expression):
+            if i < length_of_expression - 1:
+                if char in "+-*/^" and not (expression[i + 1].isdigit() or expression[i + 1] in "x(+-"):
+                    improper_syntax = True
+                    break
+                if char == "(" and not (expression[i + 1].isdigit() or expression[i + 1] in "x(+-"):
+                    improper_syntax = True
+                    break
+                if char == "x" and expression[i + 1] == ".":
+                    improper_syntax = True
+                    break
+                if char == "." and not expression[i + 1].isdigit():
+                    improper_syntax = True
+                    break
+
+        if expression[length_of_expression - 1] in "+-*/^.":
+            improper_syntax = True
+
+        if improper_syntax:
+            return "improper syntax"
+
+        open_parentheses_count = 0
+        for char in expression:
+            if char == "(":
+                open_parentheses_count += 1
+            elif char == ")":
+                open_parentheses_count -= 1
+
+            if open_parentheses_count < 0:
+                return "closing parenthesis with no matching open parenthesis"
+
+        if open_parentheses_count > 0:
+            return "unclosed parentheses"
+
+        return "equation is correct"
+
+    @staticmethod
     def check_equation_mistakes(equation):
         """Returns a string representing the problem with how equation was written or 'equation is correct' if there
         are no mistakes.
@@ -302,7 +360,7 @@ class MathApp(QMainWindow):
         if open_parentheses_count > 0:
             return "unclosed parentheses"
 
-        return "equation is correct"
+        return "expression is correct"
 
     @staticmethod
     def expand_expression(expression):
