@@ -469,12 +469,12 @@
         </property>
         <item>
          <property name="text">
-          <string>Polynomial roots calculator</string>
+          <string>Expression simplifier</string>
          </property>
         </item>
         <item>
          <property name="text">
-          <string>Function inverse calculator</string>
+          <string>Polynomial roots calculator</string>
          </property>
         </item>
        </widget>
