@@ -41,6 +41,11 @@ class MathApp(QMainWindow):
 
         self.minimum_size_policy = QSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Minimum)
 
+        self.create_algebra_widgets()
+
+        self.show()
+
+    def create_algebra_widgets(self):
         # Polynomial roots calculator widgets
         self.polynomialRootsEnterEquationLabel = QLabel(self)
         self.polynomialRootsEnterEquationLabel.setText("Enter your polynomial equation here: (ex: y = 2x^2 - 8x + 6)")
@@ -75,8 +80,6 @@ class MathApp(QMainWindow):
             widget.hide()
 
         self.algebraComboBox.activated.connect(lambda: self.draw_window(self.algebraComboBox.currentText()))
-
-        self.show()
 
     def clear_window(self):
         for widget in self.displayed_widgets:
