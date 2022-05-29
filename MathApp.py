@@ -46,6 +46,31 @@ class MathApp(QMainWindow):
         self.show()
 
     def create_algebra_widgets(self):
+        # Expression simplifier widgets
+        self.expressionSimplifierEnterExpressionLabel = QLabel(self)
+        self.expressionSimplifierEnterExpressionLabel.setText("Enter your expression here: (ex: (x+1)(x+3))")
+        self.expressionSimplifierEnterExpressionLabel.setFont(self.main_font)
+        self.expressionSimplifierEnterExpressionLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.expressionSimplifierEnterExpressionLabel.setSizePolicy(self.minimum_size_policy)
+        self.mathAppGrid.addWidget(self.expressionSimplifierEnterExpressionLabel, 4, 1, 1, 3)
+        # --------------------------------------------------
+        self.expressionSimplifierExpressionInsertionLineEdit = QLineEdit(self)
+        self.expressionSimplifierExpressionInsertionLineEdit.setFont(self.main_font)
+        self.expressionSimplifierExpressionInsertionLineEdit.setSizePolicy(self.minimum_size_policy)
+        self.mathAppGrid.addWidget(self.expressionSimplifierExpressionInsertionLineEdit, 5, 1, 1, 3)
+        # --------------------------------------------------
+        self.expressionSimplifierSimplifyExpressionButton = QPushButton(self)
+        self.expressionSimplifierSimplifyExpressionButton.setText("Simplify expression")
+        self.expressionSimplifierSimplifyExpressionButton.setSizePolicy(self.minimum_size_policy)
+        self.expressionSimplifierSimplifyExpressionButton.clicked.connect(self.simplify_expression)
+        self.mathAppGrid.addWidget(self.expressionSimplifierSimplifyExpressionButton, 7, 1, 1, 3)
+        # --------------------------------------------------
+        self.expression_simplifier_widgets = [self.expressionSimplifierEnterExpressionLabel,
+                                              self.expressionSimplifierExpressionInsertionLineEdit,
+                                              self.expressionSimplifierSimplifyExpressionButton]
+        for widget in self.expression_simplifier_widgets:
+            widget.hide()
+
         # Polynomial roots calculator widgets
         self.polynomialRootsEnterEquationLabel = QLabel(self)
         self.polynomialRootsEnterEquationLabel.setText("Enter your polynomial equation here: (ex: y = 2x^2 - 8x + 6)")
@@ -107,6 +132,16 @@ class MathApp(QMainWindow):
             for widget in self.polynomial_roots_calculator_widgets:
                 self.displayed_widgets.append(widget)
                 widget.show()
+
+        elif window_name == "Expression simplifier":
+            self.nameOfCurrWindowLabel.setText("Expression simplifier")
+
+            for widget in self.expression_simplifier_widgets:
+                self.displayed_widgets.append(widget)
+                widget.show()
+
+    def simplify_expression(self):
+        pass
 
     def calculate_roots_for_polynomial(self):
         self.clear_temporary_widgets()
