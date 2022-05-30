@@ -9,6 +9,19 @@ class TestMathApp(unittest.TestCase):
         qapp = MathApp.QApplication(sys.argv)
         self.app = MathApp.MathApp()
 
+    def test_check_expression_mistakes(self):
+        inputs_to_outputs = {
+            "a^2+3a+4": "variables other than x in expression",
+            "35%": "illegal characters in expression",
+            "35*)": "improper syntax",
+            "35)+5": "closing parenthesis with no matching open parenthesis",
+            "(35+5": "unclosed parentheses",
+            "x^2+3x+4": "expression is correct"
+        }
+        # input is a built-in function
+        for input_, output in inputs_to_outputs.items():
+            self.assertEqual(self.app.check_expression_mistakes(input_), output)
+
     def test_check_equation_mistakes(self):
         inputs_to_outputs = {
             "x^2+3x+4": "no 'y=' at beginning",
@@ -25,6 +38,16 @@ class TestMathApp(unittest.TestCase):
         # input is a built-in function
         for input_, output in inputs_to_outputs.items():
             self.assertEqual(self.app.check_equation_mistakes(input_), output)
+
+    def test_sympy_simplify_expression(self):
+        inputs_to_outputs = {
+            "3x*3": (True, "9*x"),
+            "(x+1)^2": (True, "(x+1)^2"),
+            "(3x+4)/(9x^2+24x+16)": (True, "1/(3*x+4)")
+        }
+        # input is a built-in function
+        for input_, output in inputs_to_outputs.items():
+            self.assertEqual(self.app.sympy_simplify_expression(input_), output)
 
     def test_expand_expression(self):
         inputs_to_outputs = {
