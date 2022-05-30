@@ -412,7 +412,7 @@ class MathApp(QMainWindow):
         if open_parentheses_count > 0:
             return "unclosed parentheses"
 
-        return "expression is correct"
+        return "equation is correct"
 
     @staticmethod
     def sympy_simplify_expression(expression):
