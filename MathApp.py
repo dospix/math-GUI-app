@@ -283,7 +283,7 @@ class MathApp(QMainWindow):
         if open_parentheses_count > 0:
             return "unclosed parentheses"
 
-        return "equation is correct"
+        return "expression is correct"
 
     @staticmethod
     def check_equation_mistakes(equation):
