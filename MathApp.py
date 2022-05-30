@@ -141,7 +141,59 @@ class MathApp(QMainWindow):
                 widget.show()
 
     def simplify_expression(self):
-        pass
+        self.clear_temporary_widgets()
+
+        expression = self.expressionSimplifierExpressionInsertionLineEdit.text()
+        expression = expression.replace(" ", "")
+
+        warning = self.check_expression_mistakes(expression)
+        if not warning == "expression is correct":
+            warning_label = QLabel(self)
+            warning_label.setStyleSheet("color: red;")
+            warning_label.setFont(self.main_font)
+            warning_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            warning_label.setSizePolicy(self.minimum_size_policy)
+            self.temporary_widgets.append(warning_label)
+
+            if warning == "variables other than x in expression":
+                warning_label.setText("Please only use lowercase x as the variable in your expression")
+            elif warning == "illegal characters in expression":
+                warning_label.setText("Illegal characters used. Please only use x, numbers with/without decimals, "
+                                      "parentheses and the +, -, *, /, ^ operators")
+            elif warning == "improper syntax":
+                warning_label.setText("Improper syntax. Please check that you've written your expression correctly")
+            elif warning == "closing parenthesis with no matching open parenthesis":
+                warning_label.setText("You've used a closing parenthesis that doesn't have a matching open parenthesis")
+            elif warning == "unclosed parentheses":
+                warning_label.setText("You have unclosed parentheses")
+
+            # the 'illegal characters in equation' warning is too big to fit 3 columns
+            if warning != "illegal characters in expression":
+                self.mathAppGrid.addWidget(warning_label, 9, 1, 1, 3)
+            else:
+                self.mathAppGrid.addWidget(warning_label, 9, 0, 1, 5)
+
+            return
+
+        successful_expansion, expression = self.expand_expression(expression)
+
+        if not successful_expansion:
+            warning.setText("The expression could not be expanded")
+            return
+
+        successful_simplification, expression = self.sympy_simplify_expression(expression)
+
+        if not successful_simplification:
+            warning.setText("The expression could not be simplified")
+            return
+
+        simplified_equation_label = QLabel(self)
+        simplified_equation_label.setText("The expression was simplified to: " + str(expression))
+        simplified_equation_label.setFont(self.main_font)
+        simplified_equation_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        simplified_equation_label.setSizePolicy(self.minimum_size_policy)
+        self.temporary_widgets.append(simplified_equation_label)
+        self.mathAppGrid.addWidget(simplified_equation_label, 9, 1, 1, 3)
 
     def calculate_roots_for_polynomial(self):
         self.clear_temporary_widgets()
