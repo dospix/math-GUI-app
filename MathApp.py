@@ -363,6 +363,40 @@ class MathApp(QMainWindow):
         return "expression is correct"
 
     @staticmethod
+    def sympy_simplify_expression(expression):
+        """Returns a tuple containing whether the simplification was successful
+        and in case it was the resulting simplified expression."""
+
+        # using sympy on (x+1)(x-3) returns an error, but on (x+1)*(x-3) it doesn't
+        i = 0
+        length_of_expression = len(expression)
+        while i < length_of_expression - 1:
+            char = expression[i]
+            if char.isdigit() and expression[i + 1] in "x(":
+                expression = expression[:i + 1] + "*" + expression[i + 1:]
+                length_of_expression += 1
+            elif char in "x)" and (expression[i + 1].isdigit() or expression[i + 1] in "x("):
+                expression = expression[:i + 1] + "*" + expression[i + 1:]
+                length_of_expression += 1
+            i += 1
+
+        # sympy raises an exception if you use '^' as the exponentiation operator
+        expression = expression.replace("^", "**")
+
+        try:
+            expression = sympy.parse_expr(expression)
+            expression = sympy.simplify(expression)
+        except Exception:
+            print(traceback.format_exc())
+            return False, ""
+
+        expression = str(expression)
+        expression = expression.replace(" ", "")
+        expression = expression.replace("**", "^")
+
+        return True, expression
+
+    @staticmethod
     def expand_expression(expression):
         """Returns a tuple containing whether the expansion was successful
         and in case it was the resulting expression."""
