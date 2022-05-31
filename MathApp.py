@@ -146,15 +146,16 @@ class MathApp(QMainWindow):
         expression = self.expressionSimplifierExpressionInsertionLineEdit.text()
         expression = expression.replace(" ", "")
 
+        # This label will only be displayed if there is a warning
+        warning_label = QLabel(self)
+        warning_label.setStyleSheet("color: red;")
+        warning_label.setFont(self.main_font)
+        warning_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        warning_label.setSizePolicy(self.minimum_size_policy)
+        self.temporary_widgets.append(warning_label)
+
         warning = self.check_expression_mistakes(expression)
         if not warning == "expression is correct":
-            warning_label = QLabel(self)
-            warning_label.setStyleSheet("color: red;")
-            warning_label.setFont(self.main_font)
-            warning_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-            warning_label.setSizePolicy(self.minimum_size_policy)
-            self.temporary_widgets.append(warning_label)
-
             if warning == "variables other than x in expression":
                 warning_label.setText("Please only use lowercase x as the variable in your expression")
             elif warning == "illegal characters in expression":
@@ -178,13 +179,15 @@ class MathApp(QMainWindow):
         successful_expansion, expression = self.expand_expression(expression)
 
         if not successful_expansion:
-            warning.setText("The expression could not be expanded")
+            warning_label.setText("The expression could not be expanded")
+            self.mathAppGrid.addWidget(warning_label, 9, 1, 1, 3)
             return
 
         successful_simplification, expression = self.sympy_simplify_expression(expression)
 
         if not successful_simplification:
-            warning.setText("The expression could not be simplified")
+            warning_label.setText("The expression could not be simplified")
+            self.mathAppGrid.addWidget(warning_label, 9, 1, 1, 3)
             return
 
         simplified_equation_label = QLabel(self)
@@ -211,7 +214,6 @@ class MathApp(QMainWindow):
 
         warning = self.check_equation_mistakes(equation)
         if not warning == "equation is correct":
-
             if warning == "no 'y=' at beginning":
                 warning_label.setText("Please enter equations in the form 'y=...'")
             elif warning == "no expression after equal sign":
