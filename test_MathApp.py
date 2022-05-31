@@ -11,33 +11,26 @@ class TestMathApp(unittest.TestCase):
 
     def test_check_expression_mistakes(self):
         inputs_to_outputs = {
-            "a^2+3a+4": "variables other than x in expression",
-            "35%": "illegal characters in expression",
-            "35*)": "improper syntax",
-            "35)+5": "closing parenthesis with no matching open parenthesis",
-            "(35+5": "unclosed parentheses",
-            "x^2+3x+4": "expression is correct"
+            ("x^2+3x+4", True, True, True, True, True, True): "no 'y=' at beginning",
+            ("y=", True, True, True, True, True, True): "no expression after equal sign",
+            ("y=x-y", True, True, True, True, True, True): "y is not isolated on the left side",
+            ("y==", True, True, True, True, True, True): "multiple equal signs",
+            ("y=a^2+3a+4", True, True, True, True, True, True): "variables other than x and y in equation",
+            ("y=35%", True, True, True, True, True, True): "illegal characters in equation",
+            ("y=35*)", True, True, True, True, True, True): "improper syntax",
+            ("y=35)+5", True, True, True, True, True, True): "closing parenthesis with no matching open parenthesis",
+            ("y=(35+5", True, True, True, True, True, True): "unclosed parentheses",
+            ("y=x^2+3x+4", True, True, True, True, True, True): "equation is correct",
+            ("a^2+3a+4", False, True, True, True, True, True): "variables other than x in expression",
+            ("35%", False, True, True, True, True, True): "illegal characters in expression",
+            ("35*)", False, True, True, True, True, True): "improper syntax",
+            ("35)+5", False, True, True, True, True, True): "closing parenthesis with no matching open parenthesis",
+            ("(35+5", False, True, True, True, True, True): "unclosed parentheses",
+            ("x^2+3x+4", False, True, True, True, True, True): "expression is correct"
         }
         # input is a built-in function
         for input_, output in inputs_to_outputs.items():
-            self.assertEqual(self.app.check_expression_mistakes(input_), output)
-
-    def test_check_equation_mistakes(self):
-        inputs_to_outputs = {
-            "x^2+3x+4": "no 'y=' at beginning",
-            "y=": "no expression after equal sign",
-            "y=x-y": "y is not isolated on the left side",
-            "y==": "multiple equal signs",
-            "y=a^2+3a+4": "variables other than x and y in equation",
-            "y=35%": "illegal characters in equation",
-            "y=35*)": "improper syntax",
-            "y=35)+5": "closing parenthesis with no matching open parenthesis",
-            "y=(35+5": "unclosed parentheses",
-            "y=x^2+3x+4": "equation is correct"
-        }
-        # input is a built-in function
-        for input_, output in inputs_to_outputs.items():
-            self.assertEqual(self.app.check_equation_mistakes(input_), output)
+            self.assertEqual(self.app.check_expression_mistakes(*input_), output)
 
     def test_sympy_simplify_expression(self):
         inputs_to_outputs = {

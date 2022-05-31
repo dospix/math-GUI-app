@@ -205,7 +205,8 @@ class MathApp(QMainWindow):
         warning_label.setSizePolicy(self.minimum_size_policy)
         self.temporary_widgets.append(warning_label)
 
-        warning = self.check_expression_mistakes(expression)
+        warning = self.check_expression_mistakes(expression, non_x_or_y_variables=True, illegal_characters=True,
+                                                 improper_syntax=True, incorrectly_placed_parentheses=True)
         if not warning == "expression is correct":
             if warning == "variables other than x in expression":
                 warning_label.setText("Please only use lowercase x as the variable in your expression")
@@ -263,7 +264,9 @@ class MathApp(QMainWindow):
         warning_label.setSizePolicy(self.minimum_size_policy)
         self.temporary_widgets.append(warning_label)
 
-        warning = self.check_equation_mistakes(equation)
+        warning = self.check_expression_mistakes(equation, is_equation=True, y_not_isolated=True,
+                                                 non_x_or_y_variables=True, illegal_characters=True,
+                                                 improper_syntax=True, incorrectly_placed_parentheses=True)
         if not warning == "equation is correct":
             if warning == "no 'y=' at beginning":
                 warning_label.setText("Please enter equations in the form 'y=...'")
@@ -338,139 +341,125 @@ class MathApp(QMainWindow):
         self.mathAppGrid.addWidget(result_label, 10, 1, 1, 3)
 
     @staticmethod
-    def check_expression_mistakes(expression):
-        """Returns a string representing the problem with how expression was written or 'expression is correct' if there
-        are no mistakes.
+    def check_expression_mistakes(expression, is_equation=False, y_not_isolated=False, non_x_or_y_variables=False,
+                                  illegal_characters=False, improper_syntax=False, incorrectly_placed_parentheses=False,
+                                  ):
+        """Checks if the expression/equation given has any mistakes and returns said mistake, otherwise it returns
+        that it is correct. When calling the method it can be specified through its keyword arguments what constitutes
+        as a mistake.
         Cases:
-        'a^2+3a+4' -> 'variables other than x in expression'
-        '35%' -> 'illegal characters in expression'
-        '35*)' -> 'improper syntax'
-        '35)+5' -> 'closing parenthesis with no matching open parenthesis'
-        '(35+5' -> 'unclosed parentheses'
-        'x^2+3x+4' -> 'expression is correct'"""
+        *is_equation=True:
+            'x^2+3x+4' -> 'no 'y=' at beginning'
+            'y=' -> 'no expression after equal sign'
+            *y_not_isolated=True:
+                'y=x-y' -> 'y is not isolated on the left side'
+            'y==' -> 'multiple equal signs'
+            *non_x_or_y_variables=True:
+                'y=a^2+3a+4' -> 'variables other than x and y in equation'
+            *illegal_characters=True:
+                'y=35%' -> 'illegal characters in equation'
+            *improper_syntax=True:
+                'y=35*)' -> 'improper syntax'
+            *incorrectly_placed_parentheses=True:
+                'y=35)+5' -> 'closing parenthesis with no matching open parenthesis'
+                'y=(35+5' -> 'unclosed parentheses'
 
-        for char in expression:
-            if char.isalpha() and char != "x":
-                return "variables other than x in expression"
+            No mistakes:
+                'y=x^2+3x+4' -> 'equation is correct'
 
-        for char in expression:
-            if char not in "x0123456789.()+-*/^":
-                return "illegal characters in expression"
+        *is_equation=False:
+            *non_x_or_y_variables=True:
+                'a^2+3a+4' -> 'variables other than x in expression'
+            *illegal_characters=True:
+                '35%' -> 'illegal characters in expression'
+            *improper_syntax=True:
+                '35*)' -> 'improper syntax'
+            *incorrectly_placed_parentheses=True:
+                '35)+5' -> 'closing parenthesis with no matching open parenthesis'
+                '(35+5' -> 'unclosed parentheses'
 
-        improper_syntax = False
-        length_of_expression = len(expression)
-        for i, char in enumerate(expression):
-            if i < length_of_expression - 1:
-                if char in "+-*/^" and not (expression[i + 1].isdigit() or expression[i + 1] in "x(+-"):
-                    improper_syntax = True
-                    break
-                if char == "(" and not (expression[i + 1].isdigit() or expression[i + 1] in "x(+-"):
-                    improper_syntax = True
-                    break
-                if char == "x" and expression[i + 1] == ".":
-                    improper_syntax = True
-                    break
-                if char == "." and not expression[i + 1].isdigit():
-                    improper_syntax = True
-                    break
+            No mistakes:
+                'x^2+3x+4' -> 'expression is correct'"""
 
-        if expression[length_of_expression - 1] in "+-*/^.":
-            improper_syntax = True
+        if is_equation:
+            equation = expression
+
+            if equation[:2] != "y=":
+                return "no 'y=' at beginning"
+
+            if len(equation) == 2:
+                return "no expression after equal sign"
+
+            if y_not_isolated:
+                if "y" in equation[2:]:
+                    return "y is not isolated on the left side"
+
+            if equation.count("=") > 1:
+                return "multiple equal signs"
+
+            if non_x_or_y_variables:
+                for char in equation:
+                    if char.isalpha() and char not in ["x", "y"]:
+                        return "variables other than x and y in equation"
+
+            if illegal_characters:
+                for char in equation:
+                    if char not in "xy0123456789.=()+-*/^":
+                        return "illegal characters in equation"
+
+        elif not is_equation:
+            if non_x_or_y_variables:
+                for char in expression:
+                    if char.isalpha() and char != "x":
+                        return "variables other than x in expression"
+
+            if illegal_characters:
+                for char in expression:
+                    if char not in "x0123456789.()+-*/^":
+                        return "illegal characters in expression"
 
         if improper_syntax:
-            return "improper syntax"
+            improper_syntax_in_expression = False
+            length_of_expression = len(expression)
+            for i, char in enumerate(expression):
+                if i < length_of_expression - 1:
+                    if char in "+-*/^" and not (expression[i + 1].isdigit() or expression[i + 1] in "x(+-"):
+                        improper_syntax_in_expression = True
+                        break
+                    if char == "(" and not (expression[i + 1].isdigit() or expression[i + 1] in "x(+-"):
+                        improper_syntax_in_expression = True
+                        break
+                    if char == "x" and expression[i + 1] == ".":
+                        improper_syntax_in_expression = True
+                        break
+                    if char == "." and not expression[i + 1].isdigit():
+                        improper_syntax_in_expression = True
+                        break
 
-        open_parentheses_count = 0
-        for char in expression:
-            if char == "(":
-                open_parentheses_count += 1
-            elif char == ")":
-                open_parentheses_count -= 1
+            if expression[length_of_expression - 1] in "+-*/^.":
+                improper_syntax_in_expression = True
 
-            if open_parentheses_count < 0:
-                return "closing parenthesis with no matching open parenthesis"
+            if improper_syntax_in_expression:
+                return "improper syntax"
 
-        if open_parentheses_count > 0:
-            return "unclosed parentheses"
+        if incorrectly_placed_parentheses:
+            open_parentheses_count = 0
+            for char in expression:
+                if char == "(":
+                    open_parentheses_count += 1
+                elif char == ")":
+                    open_parentheses_count -= 1
 
-        return "expression is correct"
+                if open_parentheses_count < 0:
+                    return "closing parenthesis with no matching open parenthesis"
 
-    @staticmethod
-    def check_equation_mistakes(equation):
-        """Returns a string representing the problem with how equation was written or 'equation is correct' if there
-        are no mistakes.
-        Cases:
-        'x^2+3x+4' -> 'no 'y=' at beginning'
-        'y=' -> 'no expression after equal sign'
-        'y=x-y' -> 'y is not isolated on the left side'
-        'y==' -> 'multiple equal signs'
-        'y=a^2+3a+4' -> 'variables other than x and y in equation'
-        'y=35%' -> 'illegal characters in equation'
-        'y=35*)' -> 'improper syntax'
-        'y=35)+5' -> 'closing parenthesis with no matching open parenthesis'
-        'y=(35+5' -> 'unclosed parentheses'
-        'y=x^2+3x+4' -> 'equation is correct'"""
+            if open_parentheses_count > 0:
+                return "unclosed parentheses"
 
-        if equation[:2] != "y=":
-            return "no 'y=' at beginning"
-
-        if len(equation) == 2:
-            return "no expression after equal sign"
-
-        if "y" in equation[2:]:
-            return "y is not isolated on the left side"
-
-        if equation.count("=") > 1:
-            return "multiple equal signs"
-
-        for char in equation:
-            if char.isalpha() and char not in ["x", "y"]:
-                return "variables other than x and y in equation"
-
-        for char in equation:
-            if char not in "xy0123456789.=()+-*/^":
-                return "illegal characters in equation"
-
-        improper_syntax = False
-        length_of_equation = len(equation)
-        for i, char in enumerate(equation):
-            if i < length_of_equation - 1:
-                if char == "=" and not (equation[i + 1].isdigit() or equation[i + 1] in "x(+-"):
-                    improper_syntax = True
-                    break
-                if char in "+-*/^" and not (equation[i + 1].isdigit() or equation[i + 1] in "x(+-"):
-                    improper_syntax = True
-                    break
-                if char == "(" and not (equation[i + 1].isdigit() or equation[i + 1] in "x(+-"):
-                    improper_syntax = True
-                    break
-                if char == "x" and equation[i + 1] == ".":
-                    improper_syntax = True
-                    break
-                if char == "." and not equation[i + 1].isdigit():
-                    improper_syntax = True
-                    break
-
-        if equation[length_of_equation - 1] in "+-*/^.":
-            improper_syntax = True
-
-        if improper_syntax:
-            return "improper syntax"
-
-        open_parentheses_count = 0
-        for char in equation:
-            if char == "(":
-                open_parentheses_count += 1
-            elif char == ")":
-                open_parentheses_count -= 1
-
-            if open_parentheses_count < 0:
-                return "closing parenthesis with no matching open parenthesis"
-
-        if open_parentheses_count > 0:
-            return "unclosed parentheses"
-
-        return "equation is correct"
+        if is_equation:
+            return "equation is correct"
+        else:
+            return "expression is correct"
 
     @staticmethod
     def sympy_simplify_expression(expression):
