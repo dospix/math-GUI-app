@@ -42,6 +42,7 @@ class MathApp(QMainWindow):
         self.minimum_size_policy = QSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Minimum)
 
         self.create_algebra_widgets()
+        self.create_calculus_widgets()
 
         self.show()
 
@@ -106,6 +107,49 @@ class MathApp(QMainWindow):
 
         self.algebraComboBox.activated.connect(lambda: self.draw_window(self.algebraComboBox.currentText()))
 
+    def create_calculus_widgets(self):
+        # Derivative calculator widgets
+        self.derivativeCalculatorEnterExpressionLabel = QLabel(self)
+        self.derivativeCalculatorEnterExpressionLabel.setText("Enter your expression here: (ex: sin(x))")
+        self.derivativeCalculatorEnterExpressionLabel.setFont(self.main_font)
+        self.derivativeCalculatorEnterExpressionLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.derivativeCalculatorEnterExpressionLabel.setSizePolicy(self.minimum_size_policy)
+        self.mathAppGrid.addWidget(self.derivativeCalculatorEnterExpressionLabel, 3, 1, 1, 3)
+        # --------------------------------------------------
+        self.derivativeCalculatorExpressionInsertionLineEdit = QLineEdit(self)
+        self.derivativeCalculatorExpressionInsertionLineEdit.setFont(self.main_font)
+        self.derivativeCalculatorExpressionInsertionLineEdit.setSizePolicy(self.minimum_size_policy)
+        self.mathAppGrid.addWidget(self.derivativeCalculatorExpressionInsertionLineEdit, 4, 1, 1, 3)
+        # --------------------------------------------------
+        self.derivativeCalculatorEnterVariableLabel = QLabel(self)
+        self.derivativeCalculatorEnterVariableLabel.setText("Enter the variable you're taking the derivative with "
+                                                            "respect to here: (ex: x)")
+        self.derivativeCalculatorEnterVariableLabel.setFont(self.main_font)
+        self.derivativeCalculatorEnterVariableLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.derivativeCalculatorEnterVariableLabel.setSizePolicy(self.minimum_size_policy)
+        self.mathAppGrid.addWidget(self.derivativeCalculatorEnterVariableLabel, 5, 1, 1, 3)
+        # --------------------------------------------------
+        self.derivativeCalculatorVariableInsertionLineEdit = QLineEdit(self)
+        self.derivativeCalculatorVariableInsertionLineEdit.setFont(self.main_font)
+        self.derivativeCalculatorVariableInsertionLineEdit.setSizePolicy(self.minimum_size_policy)
+        self.mathAppGrid.addWidget(self.derivativeCalculatorVariableInsertionLineEdit, 6, 2, 1, 1)
+        # --------------------------------------------------
+        self.derivativeCalculatorCalculateDerivativeButton = QPushButton(self)
+        self.derivativeCalculatorCalculateDerivativeButton.setText("Calculate derivative")
+        self.derivativeCalculatorCalculateDerivativeButton.setSizePolicy(self.minimum_size_policy)
+        # self.derivativeCalculatorCalculateDerivativeButton.clicked.connect()
+        self.mathAppGrid.addWidget(self.derivativeCalculatorCalculateDerivativeButton, 8, 1, 1, 3)
+        # --------------------------------------------------
+        self.derivative_calculator_widgets = [self.derivativeCalculatorEnterExpressionLabel,
+                                              self.derivativeCalculatorExpressionInsertionLineEdit,
+                                              self.derivativeCalculatorEnterVariableLabel,
+                                              self.derivativeCalculatorVariableInsertionLineEdit,
+                                              self.derivativeCalculatorCalculateDerivativeButton]
+        for widget in self.derivative_calculator_widgets:
+            widget.hide()
+
+        self.calculusComboBox.activated.connect(lambda: self.draw_window(self.calculusComboBox.currentText()))
+
     def clear_window(self):
         for widget in self.displayed_widgets:
             widget.hide()
@@ -137,6 +181,13 @@ class MathApp(QMainWindow):
             self.nameOfCurrWindowLabel.setText("Expression simplifier")
 
             for widget in self.expression_simplifier_widgets:
+                self.displayed_widgets.append(widget)
+                widget.show()
+
+        elif window_name == "Derivative calculator":
+            self.nameOfCurrWindowLabel.setText("Derivative calculator")
+
+            for widget in self.derivative_calculator_widgets:
                 self.displayed_widgets.append(widget)
                 widget.show()
 
