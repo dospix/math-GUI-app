@@ -111,14 +111,16 @@ class MathApp(QMainWindow):
         equation = self.polynomialRootsEquationInsertionLineEdit.text()
         equation = equation.replace(" ", "")
 
+        # This label will only be displayed if there is a warning
+        warning_label = QLabel(self)
+        warning_label.setStyleSheet("color: red;")
+        warning_label.setFont(self.main_font)
+        warning_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        warning_label.setSizePolicy(self.minimum_size_policy)
+        self.temporary_widgets.append(warning_label)
+
         warning = self.check_equation_mistakes(equation)
         if not warning == "equation is correct":
-            warning_label = QLabel(self)
-            warning_label.setStyleSheet("color: red;")
-            warning_label.setFont(self.main_font)
-            warning_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-            warning_label.setSizePolicy(self.minimum_size_policy)
-            self.temporary_widgets.append(warning_label)
 
             if warning == "no 'y=' at beginning":
                 warning_label.setText("Please enter equations in the form 'y=...'")
@@ -152,10 +154,8 @@ class MathApp(QMainWindow):
         successful_expansion, expression = self.expand_expression(equation[2:])
 
         if not successful_expansion:
-            warning.setText("The expression could not be expanded")
-            return
-
-        if not self.is_quadratic(expression):
+            warning_label.setText("The expression could not be expanded")
+            self.mathAppGrid.addWidget(warning_label, 9, 1, 1, 3)
             return
 
         expanded_equation_label = QLabel(self)
@@ -165,6 +165,11 @@ class MathApp(QMainWindow):
         expanded_equation_label.setSizePolicy(self.minimum_size_policy)
         self.temporary_widgets.append(expanded_equation_label)
         self.mathAppGrid.addWidget(expanded_equation_label, 9, 1, 1, 3)
+
+        if not self.is_quadratic(expression):
+            warning_label.setText("This polynomial is not quadratic")
+            self.mathAppGrid.addWidget(warning_label, 10, 1, 1, 3)
+            return
 
         x_squared_coeff, x_coeff, constant_coeff = self.extract_coefficients_from_quadratic(expression)
 
