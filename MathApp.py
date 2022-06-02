@@ -137,7 +137,7 @@ class MathApp(QMainWindow):
         self.derivativeCalculatorCalculateDerivativeButton = QPushButton(self)
         self.derivativeCalculatorCalculateDerivativeButton.setText("Calculate derivative")
         self.derivativeCalculatorCalculateDerivativeButton.setSizePolicy(self.minimum_size_policy)
-        # self.derivativeCalculatorCalculateDerivativeButton.clicked.connect()
+        self.derivativeCalculatorCalculateDerivativeButton.clicked.connect(self.calculate_derivative)
         self.mathAppGrid.addWidget(self.derivativeCalculatorCalculateDerivativeButton, 8, 1, 1, 3)
         # --------------------------------------------------
         self.derivative_calculator_widgets = [self.derivativeCalculatorEnterExpressionLabel,
@@ -339,6 +339,22 @@ class MathApp(QMainWindow):
         result_label.setSizePolicy(self.minimum_size_policy)
         self.temporary_widgets.append(result_label)
         self.mathAppGrid.addWidget(result_label, 10, 1, 1, 3)
+
+    def calculate_derivative(self):
+        self.clear_temporary_widgets()
+
+        expression = self.derivativeCalculatorExpressionInsertionLineEdit.text()
+        expression = expression.replace(" ", "")
+        expression = self.add_multiplication_signs(expression, has_trigonometric_functions=True)
+        expression = expression.replace("^", "**")
+
+        variable = self.derivativeCalculatorVariableInsertionLineEdit.text()
+
+        derivative = sympy.diff(expression, variable)
+        derivative = str(derivative)
+        derivative = derivative.replace("**", "^")
+
+        print(derivative)
 
     @staticmethod
     def check_expression_mistakes(expression, is_equation=False, y_not_isolated=False, non_x_or_y_variables=False,
