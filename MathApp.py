@@ -530,6 +530,67 @@ class MathApp(QMainWindow):
         return True, expression
 
     @staticmethod
+    def add_multiplication_signs(expression, has_trigonometric_functions=False):
+        trig_identities = ["sin", "cos", "tan", "cot", "sec", "csc"]
+        inverse_trig_identities = ["asin", "acos", "atan", "acot", "asec", "acsc"]
+
+        len_expression = len(expression)
+        i = 0
+        while i < len_expression - 1:
+            if expression[i].isalpha() and expression[i + 1] == "(":
+                if has_trigonometric_functions:
+                    if i >= 2 and expression[i-2:i+1] in trig_identities:
+                        i += 1
+                        continue
+                    elif i >= 3 and expression[i-3:i+1] in inverse_trig_identities:
+                        i += 1
+                        continue
+                    else:
+                        expression = expression[:i + 1] + "*" + expression[i + 1:]
+                        len_expression += 1
+                else:
+                    expression = expression[:i + 1] + "*" + expression[i + 1:]
+                    len_expression += 1
+            elif expression[i].isalpha() and expression[i + 1].isalpha():
+                if has_trigonometric_functions:
+                    """If we encounter 2 variables next to each other in the expression we need to make sure they
+                    aren't part of a trig identity (ex: we don't want to transform sin(x) into s*i*n(x))
+                    To do that we replace all trig identities with 0's and check that our current character is
+                    still a letter
+                    Note: We need to start with inverse trig identities first because otherwise asin(x) will be
+                    converted to a000(x) which will become a*sin(x)"""
+                    expression_copy = expression
+                    for inverse_trig_identity in inverse_trig_identities:
+                        index_of_inverse_trig_identity = expression_copy.find(inverse_trig_identity)
+                        while index_of_inverse_trig_identity > -1:
+                            expression_copy = expression_copy[:index_of_inverse_trig_identity] + "0000" + \
+                                              expression_copy[index_of_inverse_trig_identity + 4:]
+                            index_of_inverse_trig_identity = expression_copy.find(inverse_trig_identity)
+                    for trig_identity in trig_identities:
+                        index_of_trig_identity = expression_copy.find(trig_identity)
+                        while index_of_trig_identity > -1:
+                            expression_copy = expression_copy[:index_of_trig_identity] + "000" + \
+                                              expression_copy[index_of_trig_identity + 3:]
+                            index_of_trig_identity = expression_copy.find(trig_identity)
+
+                    if expression_copy[i].isalpha():
+                        expression = expression[:i + 1] + "*" + expression[i + 1:]
+                        len_expression += 1
+                else:
+                    expression = expression[:i + 1] + "*" + expression[i + 1:]
+                    len_expression += 1
+            elif expression[i] == ")" and (expression[i+1].isdigit() or expression[i+1].isalpha() or
+                                           expression[i+1] == "("):
+                expression = expression[:i + 1] + "*" + expression[i + 1:]
+                len_expression += 1
+            elif expression[i].isdigit() and (expression[i + 1].isalpha() or expression[i + 1] == "("):
+                expression = expression[:i + 1] + "*" + expression[i + 1:]
+                len_expression += 1
+            i += 1
+
+        return expression
+
+    @staticmethod
     def is_quadratic(expression):
         """Returns True or False depending on whether expression is quadratic or not.
         Expressions containing x^1 and/or constants are considered quadratic.

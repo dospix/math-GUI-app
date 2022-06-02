@@ -52,6 +52,26 @@ class TestMathApp(unittest.TestCase):
         for input_, output in inputs_to_outputs.items():
             self.assertEqual(self.app.expand_expression(input_), output)
 
+    def test_add_multiplication_signs(self):
+        inputs_to_outputs = {
+            ("aeiou", False): "a*e*i*o*u",
+            ("aeiou", True): "a*e*i*o*u",
+            ("xsin(x)x", False): "x*s*i*n*(x)*x",
+            ("xsin(x)x", True): "x*sin(x)*x",
+            ("35x^2-2x+5", False): "35*x^2-2*x+5",
+            ("35x^2-2x+5", True): "35*x^2-2*x+5",
+            ("xacsc(x)-35(acos(a)yb)sin(yx)", False): "x*a*c*s*c*(x)-35*(a*c*o*s*(a)*y*b)*s*i*n*(y*x)",
+            ("xacsc(x)-35(acos(a)yb)sin(yx)", True): "x*acsc(x)-35*(acos(a)*y*b)*sin(y*x)",
+            ("(sin(x)cos(x))(tan(x)cot(x))(sec(x)csc(x))(asin(x)acos(x))(atan(x)acot(x))(asec(x)acsc(x))", False):
+                "(s*i*n*(x)*c*o*s*(x))*(t*a*n*(x)*c*o*t*(x))*(s*e*c*(x)*c*s*c*(x))*(a*s*i*n*(x)*a*c*o*s*(x))*"
+                "(a*t*a*n*(x)*a*c*o*t*(x))*(a*s*e*c*(x)*a*c*s*c*(x))",
+            ("(sin(x)cos(x))(tan(x)cot(x))(sec(x)csc(x))(asin(x)acos(x))(atan(x)acot(x))(asec(x)acsc(x))", True):
+                "(sin(x)*cos(x))*(tan(x)*cot(x))*(sec(x)*csc(x))*(asin(x)*acos(x))*(atan(x)*acot(x))*(asec(x)*acsc(x))"
+        }
+        # input is a built-in function
+        for input_, output in inputs_to_outputs.items():
+            self.assertEqual(self.app.add_multiplication_signs(*input_), output)
+
     def test_is_quadratic(self):
         inputs_to_outputs = {
             "x^2 - 6x + 6": True,
