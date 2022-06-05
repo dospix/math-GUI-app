@@ -18,6 +18,7 @@ class TestMathApp(unittest.TestCase):
             ("y=a^2+3a+4", True, True, True, True, True, True, True): "variables other than x and y in equation",
             ("y=35%", True, True, True, True, True, True, True): "illegal characters in equation",
             ("y=35*)", True, True, True, True, True, True, True): "improper syntax",
+            ("y=x*y", True, False, True, True, True, True, True): "equation is correct",
             ("y=35)+5", True, True, True, True, True, True, True): "closing parenthesis with no matching open parenthesis",
             ("y=(35+5", True, True, True, True, True, True, True): "unclosed parentheses",
             ("y=x^2+3x+4", True, True, True, True, True, True, True): "equation is correct",

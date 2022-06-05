@@ -446,15 +446,21 @@ class MathApp(QMainWindow):
         if improper_syntax:
             improper_syntax_in_expression = False
             length_of_expression = len(expression)
+            if not non_x_variables and not non_x_or_y_variables:
+                variables_in_equation = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+            elif non_x_or_y_variables:
+                variables_in_equation = "xy"
+            elif non_x_variables:
+                variables_in_equation = "x"
             for i, char in enumerate(expression):
                 if i < length_of_expression - 1:
-                    if char in "+-*/^" and not (expression[i + 1].isdigit() or expression[i + 1] in "x(+-"):
+                    if char in "+-*/^" and not (expression[i + 1].isdigit() or expression[i + 1] in "(+-" + variables_in_equation):
                         improper_syntax_in_expression = True
                         break
-                    if char == "(" and not (expression[i + 1].isdigit() or expression[i + 1] in "x(+-"):
+                    if char == "(" and not (expression[i + 1].isdigit() or expression[i + 1] in "(+-" + variables_in_equation):
                         improper_syntax_in_expression = True
                         break
-                    if char == "x" and expression[i + 1] == ".":
+                    if char in variables_in_equation and expression[i + 1] == ".":
                         improper_syntax_in_expression = True
                         break
                     if char == "." and not expression[i + 1].isdigit():
