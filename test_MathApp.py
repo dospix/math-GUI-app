@@ -11,22 +11,24 @@ class TestMathApp(unittest.TestCase):
 
     def test_check_expression_mistakes(self):
         inputs_to_outputs = {
-            ("x^2+3x+4", True, True, True, True, True, True): "no 'y=' at beginning",
-            ("y=", True, True, True, True, True, True): "no expression after equal sign",
-            ("y=x-y", True, True, True, True, True, True): "y is not isolated on the left side",
-            ("y==", True, True, True, True, True, True): "multiple equal signs",
-            ("y=a^2+3a+4", True, True, True, True, True, True): "variables other than x and y in equation",
-            ("y=35%", True, True, True, True, True, True): "illegal characters in equation",
-            ("y=35*)", True, True, True, True, True, True): "improper syntax",
-            ("y=35)+5", True, True, True, True, True, True): "closing parenthesis with no matching open parenthesis",
-            ("y=(35+5", True, True, True, True, True, True): "unclosed parentheses",
-            ("y=x^2+3x+4", True, True, True, True, True, True): "equation is correct",
-            ("a^2+3a+4", False, True, True, True, True, True): "variables other than x in expression",
-            ("35%", False, True, True, True, True, True): "illegal characters in expression",
-            ("35*)", False, True, True, True, True, True): "improper syntax",
-            ("35)+5", False, True, True, True, True, True): "closing parenthesis with no matching open parenthesis",
-            ("(35+5", False, True, True, True, True, True): "unclosed parentheses",
-            ("x^2+3x+4", False, True, True, True, True, True): "expression is correct"
+            ("x^2+3x+4", True, True, True, True, True, True, True): "no 'y=' at beginning",
+            ("y=", True, True, True, True, True, True, True): "no expression after equal sign",
+            ("y=x-y", True, True, True, True, True, True, True): "y is not isolated on the left side",
+            ("y==", True, True, True, True, True, True, True): "multiple equal signs",
+            ("y=a^2+3a+4", True, True, True, True, True, True, True): "variables other than x and y in equation",
+            ("y=35%", True, True, True, True, True, True, True): "illegal characters in equation",
+            ("y=35*)", True, True, True, True, True, True, True): "improper syntax",
+            ("y=35)+5", True, True, True, True, True, True, True): "closing parenthesis with no matching open parenthesis",
+            ("y=(35+5", True, True, True, True, True, True, True): "unclosed parentheses",
+            ("y=x^2+3x+4", True, True, True, True, True, True, True): "equation is correct",
+            ("a^2+3a+4", False, True, True, True, True, True, True): "variables other than x and y in expression",
+            ("a^2+3a+4", False, True, False, True, True, True, True): "variables other than x in expression",
+            ("35%", False, True, True, True, True, True, True): "illegal characters in expression",
+            ("35*)", False, True, True, True, True, True, True): "improper syntax",
+            ("35)+5", False, True, True, True, True, True, True): "closing parenthesis with no matching open parenthesis",
+            ("(35+5", False, True, True, True, True, True, True): "unclosed parentheses",
+            ("x^2+3x+4", False, True, False, True, True, True, True): "expression is correct",
+            ("x^2+3xy+4", False, True, True, False, True, True): "expression is correct"
         }
         # input is a built-in function
         for input_, output in inputs_to_outputs.items():

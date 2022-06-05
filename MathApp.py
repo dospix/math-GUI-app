@@ -205,8 +205,9 @@ class MathApp(QMainWindow):
         warning_label.setSizePolicy(self.minimum_size_policy)
         self.temporary_widgets.append(warning_label)
 
-        warning = self.check_expression_mistakes(expression, non_x_or_y_variables=True, illegal_characters=True,
-                                                 improper_syntax=True, incorrectly_placed_parentheses=True)
+        warning = self.check_expression_mistakes(expression, non_x_or_y_variables=False, non_x_variables=True,
+                                                 illegal_characters=True, improper_syntax=True,
+                                                 incorrectly_placed_parentheses=True)
         if not warning == "expression is correct":
             if warning == "variables other than x in expression":
                 warning_label.setText("Please only use lowercase x as the variable in your expression")
@@ -265,8 +266,9 @@ class MathApp(QMainWindow):
         self.temporary_widgets.append(warning_label)
 
         warning = self.check_expression_mistakes(equation, is_equation=True, y_not_isolated=True,
-                                                 non_x_or_y_variables=True, illegal_characters=True,
-                                                 improper_syntax=True, incorrectly_placed_parentheses=True)
+                                                 non_x_or_y_variables=True, non_x_variables=False,
+                                                 illegal_characters=True, improper_syntax=True,
+                                                 incorrectly_placed_parentheses=True)
         if not warning == "equation is correct":
             if warning == "no 'y=' at beginning":
                 warning_label.setText("Please enter equations in the form 'y=...'")
@@ -358,8 +360,8 @@ class MathApp(QMainWindow):
 
     @staticmethod
     def check_expression_mistakes(expression, is_equation=False, y_not_isolated=False, non_x_or_y_variables=False,
-                                  illegal_characters=False, improper_syntax=False, incorrectly_placed_parentheses=False,
-                                  ):
+                                  non_x_variables=False, illegal_characters=False, improper_syntax=False,
+                                  incorrectly_placed_parentheses=False,):
         """Checks if the expression/equation given has any mistakes and returns said mistake, otherwise it returns
         that it is correct. When calling the method it can be specified through its keyword arguments what constitutes
         as a mistake.
@@ -385,6 +387,8 @@ class MathApp(QMainWindow):
 
         *is_equation=False:
             *non_x_or_y_variables=True:
+                'a^2+3a+4' -> 'variables other than x and y in expression'
+            *non_x_variables=True:
                 'a^2+3a+4' -> 'variables other than x in expression'
             *illegal_characters=True:
                 '35%' -> 'illegal characters in expression'
@@ -426,12 +430,17 @@ class MathApp(QMainWindow):
         elif not is_equation:
             if non_x_or_y_variables:
                 for char in expression:
+                    if char.isalpha() and char not in "xy":
+                        return "variables other than x and y in expression"
+
+            if non_x_variables:
+                for char in expression:
                     if char.isalpha() and char != "x":
                         return "variables other than x in expression"
 
             if illegal_characters:
                 for char in expression:
-                    if char not in "x0123456789.()+-*/^":
+                    if not char.isalpha() and char not in "0123456789.()+-*/^":
                         return "illegal characters in expression"
 
         if improper_syntax:
