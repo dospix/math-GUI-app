@@ -397,7 +397,13 @@ class MathApp(QMainWindow):
         derivative = str(derivative)
         derivative = derivative.replace("**", "^")
 
-        print(derivative)
+        result_label = QLabel(self)
+        result_label.setText("The derivative of the equation above is: " + derivative)
+        result_label.setFont(self.main_font)
+        result_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        result_label.setSizePolicy(self.minimum_size_policy)
+        self.temporary_widgets.append(result_label)
+        self.mathAppGrid.addWidget(result_label, 10, 1, 1, 3)
 
     @staticmethod
     def check_expression_mistakes(expression, is_equation=False, y_not_isolated=False, non_x_or_y_variables=False,
