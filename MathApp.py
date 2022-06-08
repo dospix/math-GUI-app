@@ -148,6 +148,46 @@ class MathApp(QMainWindow):
         for widget in self.derivative_calculator_widgets:
             widget.hide()
 
+        # Integral calculator widgets
+        self.integralCalculatorEnterExpressionLabel = QLabel(self)
+        self.integralCalculatorEnterExpressionLabel.setText("Enter your expression here: (ex: cos(x))")
+        self.integralCalculatorEnterExpressionLabel.setFont(self.main_font)
+        self.integralCalculatorEnterExpressionLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.integralCalculatorEnterExpressionLabel.setSizePolicy(self.minimum_size_policy)
+        self.mathAppGrid.addWidget(self.integralCalculatorEnterExpressionLabel, 3, 1, 1, 3)
+        # --------------------------------------------------
+        self.integralCalculatorExpressionInsertionLineEdit = QLineEdit(self)
+        self.integralCalculatorExpressionInsertionLineEdit.setFont(self.main_font)
+        self.integralCalculatorExpressionInsertionLineEdit.setSizePolicy(self.minimum_size_policy)
+        self.mathAppGrid.addWidget(self.integralCalculatorExpressionInsertionLineEdit, 4, 1, 1, 3)
+        # --------------------------------------------------
+        self.integralCalculatorEnterVariableLabel = QLabel(self)
+        self.integralCalculatorEnterVariableLabel.setText("Enter the variable you're taking the integral with respect "
+                                                          "to here: (ex: x)")
+        self.integralCalculatorEnterVariableLabel.setFont(self.main_font)
+        self.integralCalculatorEnterVariableLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.integralCalculatorEnterVariableLabel.setSizePolicy(self.minimum_size_policy)
+        self.mathAppGrid.addWidget(self.integralCalculatorEnterVariableLabel, 5, 1, 1, 3)
+        # --------------------------------------------------
+        self.integralCalculatorVariableInsertionLineEdit = QLineEdit(self)
+        self.integralCalculatorVariableInsertionLineEdit.setFont(self.main_font)
+        self.integralCalculatorVariableInsertionLineEdit.setSizePolicy(self.minimum_size_policy)
+        self.mathAppGrid.addWidget(self.integralCalculatorVariableInsertionLineEdit, 6, 2, 1, 1)
+        # --------------------------------------------------
+        self.integralCalculatorCalculateIntegralButton = QPushButton(self)
+        self.integralCalculatorCalculateIntegralButton.setText("Calculate integral")
+        self.integralCalculatorCalculateIntegralButton.setSizePolicy(self.minimum_size_policy)
+        self.integralCalculatorCalculateIntegralButton.clicked.connect(self.calculate_integral)
+        self.mathAppGrid.addWidget(self.integralCalculatorCalculateIntegralButton, 8, 1, 1, 3)
+        # --------------------------------------------------
+        self.integral_calculator_widgets = [self.integralCalculatorEnterExpressionLabel,
+                                            self.integralCalculatorExpressionInsertionLineEdit,
+                                            self.integralCalculatorEnterVariableLabel,
+                                            self.integralCalculatorVariableInsertionLineEdit,
+                                            self.integralCalculatorCalculateIntegralButton]
+        for widget in self.integral_calculator_widgets:
+            widget.hide()
+
         self.calculusComboBox.activated.connect(lambda: self.draw_window(self.calculusComboBox.currentText()))
 
     def clear_window(self):
@@ -188,6 +228,13 @@ class MathApp(QMainWindow):
             self.nameOfCurrWindowLabel.setText("Derivative calculator")
 
             for widget in self.derivative_calculator_widgets:
+                self.displayed_widgets.append(widget)
+                widget.show()
+
+        elif window_name == "Integral calculator":
+            self.nameOfCurrWindowLabel.setText("Integral calculator")
+
+            for widget in self.integral_calculator_widgets:
                 self.displayed_widgets.append(widget)
                 widget.show()
 
@@ -404,6 +451,9 @@ class MathApp(QMainWindow):
         result_label.setSizePolicy(self.minimum_size_policy)
         self.temporary_widgets.append(result_label)
         self.mathAppGrid.addWidget(result_label, 10, 1, 1, 3)
+
+    def calculate_integral(self):
+        pass
 
     @staticmethod
     def check_expression_mistakes(expression, is_equation=False, y_not_isolated=False, non_x_or_y_variables=False,
