@@ -445,7 +445,7 @@ class MathApp(QMainWindow):
         derivative = derivative.replace("**", "^")
 
         result_label = QLabel(self)
-        result_label.setText("The derivative of the equation above is: " + derivative)
+        result_label.setText("The derivative of the expression above is: " + derivative)
         result_label.setFont(self.main_font)
         result_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         result_label.setSizePolicy(self.minimum_size_policy)
@@ -512,7 +512,7 @@ class MathApp(QMainWindow):
         integral = integral.replace("**", "^")
 
         result_label = QLabel(self)
-        result_label.setText("The integral of the equation above is: " + integral + " + C")
+        result_label.setText("The integral of the expression above is: " + integral + " + C")
         result_label.setFont(self.main_font)
         result_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         result_label.setSizePolicy(self.minimum_size_policy)
