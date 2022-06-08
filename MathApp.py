@@ -453,7 +453,71 @@ class MathApp(QMainWindow):
         self.mathAppGrid.addWidget(result_label, 10, 1, 1, 3)
 
     def calculate_integral(self):
-        pass
+        self.clear_temporary_widgets()
+
+        expression = self.integralCalculatorExpressionInsertionLineEdit.text()
+        expression = expression.replace(" ", "")
+        expression = self.add_multiplication_signs(expression, has_trigonometric_functions=True)
+
+        # This label will only be displayed if there is a warning
+        warning_label = QLabel(self)
+        warning_label.setStyleSheet("color: red;")
+        warning_label.setFont(self.main_font)
+        warning_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        warning_label.setSizePolicy(self.minimum_size_policy)
+        self.temporary_widgets.append(warning_label)
+
+        warning = self.check_expression_mistakes(expression, is_equation=False, y_not_isolated=False,
+                                                 non_x_or_y_variables=False, non_x_variables=False,
+                                                 illegal_characters=True, improper_syntax=True,
+                                                 incorrectly_placed_parentheses=True)
+
+        if not warning == "expression is correct":
+            if warning == "illegal characters in expression":
+                warning_label.setText("Illegal characters used. Please only use letters, numbers with/without decimals,"
+                                      " parentheses and the +, -, *, /, ^ operators")
+            elif warning == "improper syntax":
+                warning_label.setText("Improper syntax. Please check that you've written your expression correctly")
+            elif warning == "closing parenthesis with no matching open parenthesis":
+                warning_label.setText("You've used a closing parenthesis that doesn't have a matching open parenthesis")
+            elif warning == "unclosed parentheses":
+                warning_label.setText("You have unclosed parentheses")
+
+            # the 'illegal characters in equation' warning is too big to fit 3 columns
+            if warning != "illegal characters in expression":
+                self.mathAppGrid.addWidget(warning_label, 9, 1, 1, 3)
+            else:
+                self.mathAppGrid.addWidget(warning_label, 9, 0, 1, 5)
+
+            return
+
+        variable = self.integralCalculatorVariableInsertionLineEdit.text().replace(" ", "")
+
+        if len(variable) != 1:
+            warning_label.setText("Please enter one variable")
+            self.mathAppGrid.addWidget(warning_label, 9, 1, 1, 3)
+            return
+        if not variable.isalpha():
+            warning_label.setText("The variable has to be a letter")
+            self.mathAppGrid.addWidget(warning_label, 9, 1, 1, 3)
+            return
+
+        expression = expression.replace("^", "**")
+        x = sympy.Symbol(variable)
+        try:
+            integral = sympy.integrate(expression, x)
+        except Exception:
+            print(traceback.format_exc())
+        integral = str(integral)
+        integral = integral.replace("**", "^")
+
+        result_label = QLabel(self)
+        result_label.setText("The integral of the equation above is: " + integral + " + C")
+        result_label.setFont(self.main_font)
+        result_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        result_label.setSizePolicy(self.minimum_size_policy)
+        self.temporary_widgets.append(result_label)
+        self.mathAppGrid.addWidget(result_label, 10, 1, 1, 3)
 
     @staticmethod
     def check_expression_mistakes(expression, is_equation=False, y_not_isolated=False, non_x_or_y_variables=False,
