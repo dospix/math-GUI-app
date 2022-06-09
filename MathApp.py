@@ -43,6 +43,7 @@ class MathApp(QMainWindow):
 
         self.create_algebra_widgets()
         self.create_calculus_widgets()
+        self.create_probability_and_combinatorics_widgets()
 
         self.show()
 
@@ -190,6 +191,50 @@ class MathApp(QMainWindow):
 
         self.calculusComboBox.activated.connect(lambda: self.draw_window(self.calculusComboBox.currentText()))
 
+    def create_probability_and_combinatorics_widgets(self):
+        # Percentage calculator widgets
+        self.percentageCalculatorPartialQuantityLabel = QLabel(self)
+        self.percentageCalculatorPartialQuantityLabel.setText("Enter the quantity you want to calculate the percentage of here (Ex: 23)")
+        self.percentageCalculatorPartialQuantityLabel.setFont(self.main_font)
+        self.percentageCalculatorPartialQuantityLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.percentageCalculatorPartialQuantityLabel.setSizePolicy(self.minimum_size_policy)
+        self.percentageCalculatorPartialQuantityLabel.setStyleSheet("padding: 10px")
+        self.mathAppGrid.addWidget(self.percentageCalculatorPartialQuantityLabel, 3, 1, 1, 2)
+        # --------------------------------------------------
+        self.percentageCalculatorPartialQuantityLineEdit = QLineEdit(self)
+        self.percentageCalculatorPartialQuantityLineEdit.setFont(self.main_font)
+        self.percentageCalculatorPartialQuantityLineEdit.setSizePolicy(self.minimum_size_policy)
+        self.mathAppGrid.addWidget(self.percentageCalculatorPartialQuantityLineEdit, 3, 3, 1, 1)
+        # --------------------------------------------------
+        self.percentageCalculatorTotalQuantityLabel = QLabel(self)
+        self.percentageCalculatorTotalQuantityLabel.setText("Enter the total quantity here (Ex: 127)")
+        self.percentageCalculatorTotalQuantityLabel.setFont(self.main_font)
+        self.percentageCalculatorTotalQuantityLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.percentageCalculatorTotalQuantityLabel.setSizePolicy(self.minimum_size_policy)
+        self.mathAppGrid.addWidget(self.percentageCalculatorTotalQuantityLabel, 5, 1, 1, 2)
+        # --------------------------------------------------
+        self.percentageCalculatorTotalQuantityLineEdit = QLineEdit(self)
+        self.percentageCalculatorTotalQuantityLineEdit.setFont(self.main_font)
+        self.percentageCalculatorTotalQuantityLineEdit.setSizePolicy(self.minimum_size_policy)
+        self.mathAppGrid.addWidget(self.percentageCalculatorTotalQuantityLineEdit, 5, 3, 1, 1)
+        # --------------------------------------------------
+        self.percentageCalculatorCalculatePercentageButton = QPushButton(self)
+        self.percentageCalculatorCalculatePercentageButton.setText("Calculate percentage")
+        self.percentageCalculatorCalculatePercentageButton.setSizePolicy(self.minimum_size_policy)
+        self.percentageCalculatorCalculatePercentageButton.clicked.connect(self.calculate_percentage)
+        self.mathAppGrid.addWidget(self.percentageCalculatorCalculatePercentageButton, 7, 1, 1, 3)
+        # --------------------------------------------------
+        self.percentage_calculator_widgets = [self.percentageCalculatorPartialQuantityLabel,
+                                            self.percentageCalculatorPartialQuantityLineEdit,
+                                            self.percentageCalculatorTotalQuantityLabel,
+                                            self.percentageCalculatorTotalQuantityLineEdit,
+                                            self.percentageCalculatorCalculatePercentageButton]
+        for widget in self.percentage_calculator_widgets:
+            widget.hide()
+
+        self.probabilityAndCombinatoricsComboBox.activated.connect(
+            lambda: self.draw_window(self.probabilityAndCombinatoricsComboBox.currentText()))
+
     def clear_window(self):
         for widget in self.displayed_widgets:
             widget.hide()
@@ -235,6 +280,13 @@ class MathApp(QMainWindow):
             self.nameOfCurrWindowLabel.setText("Integral calculator")
 
             for widget in self.integral_calculator_widgets:
+                self.displayed_widgets.append(widget)
+                widget.show()
+
+        elif window_name == "Percentage calculator":
+            self.nameOfCurrWindowLabel.setText("Percentage calculator")
+
+            for widget in self.percentage_calculator_widgets:
                 self.displayed_widgets.append(widget)
                 widget.show()
 
@@ -518,6 +570,9 @@ class MathApp(QMainWindow):
         result_label.setSizePolicy(self.minimum_size_policy)
         self.temporary_widgets.append(result_label)
         self.mathAppGrid.addWidget(result_label, 10, 1, 1, 3)
+
+    def calculate_percentage(self):
+        pass
 
     @staticmethod
     def check_expression_mistakes(expression, is_equation=False, y_not_isolated=False, non_x_or_y_variables=False,
