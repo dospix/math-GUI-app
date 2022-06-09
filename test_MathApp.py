@@ -35,6 +35,30 @@ class TestMathApp(unittest.TestCase):
         for input_, output in inputs_to_outputs.items():
             self.assertEqual(self.app.check_expression_mistakes(*input_), output)
 
+    def test_is_number(self):
+        inputs_to_outputs = {
+            ("", True): True,
+            ("", False): False,
+            ("23", True): True,
+            ("2.3", True): True,
+            ("-23", True): True,
+            ("-2.3", True): True,
+            ("--23", True): False,
+            ("2.3.", True): False,
+            (".23", True): True,
+            ("23.", True): True,
+            ("2-3", True): False,
+            ("23-", True): False,
+            ("-2.3", False): True,
+            ("--23", False): False,
+            ("2.3.", False): False,
+            (".23", False): True,
+            ("23.", False): True,
+        }
+        # input is a built-in function
+        for input_, output in inputs_to_outputs.items():
+            self.assertEqual(self.app.is_number(*input_), output)
+
     def test_sympy_simplify_expression(self):
         inputs_to_outputs = {
             "3x*3": (True, "9*x"),

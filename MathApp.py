@@ -572,7 +572,34 @@ class MathApp(QMainWindow):
         self.mathAppGrid.addWidget(result_label, 10, 1, 1, 3)
 
     def calculate_percentage(self):
-        pass
+        self.clear_temporary_widgets()
+
+        partial_quantity = self.percentageCalculatorPartialQuantityLineEdit.text().replace(" ", "")
+        total_quantity = self.percentageCalculatorTotalQuantityLineEdit.text().replace(" ", "")
+
+        # This label will only be displayed if there is a warning
+        warning_label = QLabel(self)
+        warning_label.setStyleSheet("color: red;")
+        warning_label.setFont(self.main_font)
+        warning_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        warning_label.setSizePolicy(self.minimum_size_policy)
+        self.temporary_widgets.append(warning_label)
+
+        warning_needed = False
+        if len(partial_quantity) == 0 or len(total_quantity) == 0:
+            warning_needed = True
+            warning_label.setText("Please enter 2 numbers in the boxes above")
+        elif not self.is_number(partial_quantity) or not self.is_number(total_quantity):
+            warning_needed = True
+            warning_label.setText("You can only use numbers in the boxes above")
+        elif total_quantity == "0" or total_quantity == "-0":
+            warning_needed = True
+            warning_label.setText("The total quantity can't be 0")
+
+        if warning_needed:
+            self.mathAppGrid.addWidget(warning_label, 9, 1, 1, 3)
+
+            return
 
     @staticmethod
     def check_expression_mistakes(expression, is_equation=False, y_not_isolated=False, non_x_or_y_variables=False,
@@ -707,6 +734,26 @@ class MathApp(QMainWindow):
             return "equation is correct"
         else:
             return "expression is correct"
+
+    @staticmethod
+    def is_number(string, empty_is_number=True):
+        """Returns True if string is a number, otherwise it returns False.
+        The method checks if string may be a negative number and/or a number with decimals."""
+
+        if len(string) == 0:
+            if not empty_is_number:
+                return False
+            else:
+                return True
+        elif not string.isdigit():
+            if string[0] == "-":
+                string = string[1:]
+            if string.count("."):
+                string = string.replace(".", "", 1)
+            if not string.isdigit():
+                return False
+
+        return True
 
     @staticmethod
     def sympy_simplify_expression(expression):
