@@ -232,6 +232,31 @@ class MathApp(QMainWindow):
         for widget in self.percentage_calculator_widgets:
             widget.hide()
 
+        # Permutations calculator widgets
+        self.permutationsCalculatorNrOfObjectsLabel = QLabel(self)
+        self.permutationsCalculatorNrOfObjectsLabel.setText("Enter the number of objects you'd like to calculate the number of permutations for:")
+        self.permutationsCalculatorNrOfObjectsLabel.setFont(self.main_font)
+        self.permutationsCalculatorNrOfObjectsLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.permutationsCalculatorNrOfObjectsLabel.setSizePolicy(self.minimum_size_policy)
+        self.mathAppGrid.addWidget(self.permutationsCalculatorNrOfObjectsLabel, 3, 1, 1, 3)
+        # --------------------------------------------------
+        self.permutationsCalculatorNrOfObjectsLineEdit = QLineEdit(self)
+        self.permutationsCalculatorNrOfObjectsLineEdit.setFont(self.main_font)
+        self.permutationsCalculatorNrOfObjectsLineEdit.setSizePolicy(self.minimum_size_policy)
+        self.mathAppGrid.addWidget(self.permutationsCalculatorNrOfObjectsLineEdit, 4, 2, 1, 1)
+        # --------------------------------------------------
+        self.permutationsCalculatorCalculatePermutationsButton = QPushButton(self)
+        self.permutationsCalculatorCalculatePermutationsButton.setText("Calculate permutations")
+        self.permutationsCalculatorCalculatePermutationsButton.setSizePolicy(self.minimum_size_policy)
+        self.permutationsCalculatorCalculatePermutationsButton.clicked.connect(self.calculate_permutations)
+        self.mathAppGrid.addWidget(self.permutationsCalculatorCalculatePermutationsButton, 6, 1, 1, 3)
+        # --------------------------------------------------
+        self.permutations_calculator_widgets = [self.permutationsCalculatorNrOfObjectsLabel,
+                                                self.permutationsCalculatorNrOfObjectsLineEdit,
+                                                self.permutationsCalculatorCalculatePermutationsButton]
+        for widget in self.permutations_calculator_widgets:
+            widget.hide()
+
         self.probabilityAndCombinatoricsComboBox.activated.connect(
             lambda: self.draw_window(self.probabilityAndCombinatoricsComboBox.currentText()))
 
@@ -287,6 +312,13 @@ class MathApp(QMainWindow):
             self.nameOfCurrWindowLabel.setText("Percentage calculator")
 
             for widget in self.percentage_calculator_widgets:
+                self.displayed_widgets.append(widget)
+                widget.show()
+
+        elif window_name == "Permutations":
+            self.nameOfCurrWindowLabel.setText("Permutations")
+
+            for widget in self.permutations_calculator_widgets:
                 self.displayed_widgets.append(widget)
                 widget.show()
 
@@ -616,6 +648,9 @@ class MathApp(QMainWindow):
         result_label.setSizePolicy(self.minimum_size_policy)
         self.temporary_widgets.append(result_label)
         self.mathAppGrid.addWidget(result_label, 9, 1, 1, 3)
+
+    def calculate_permutations(self):
+        pass
 
     @staticmethod
     def check_expression_mistakes(expression, is_equation=False, y_not_isolated=False, non_x_or_y_variables=False,
