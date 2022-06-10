@@ -258,6 +258,45 @@ class MathApp(QMainWindow):
         for widget in self.permutations_calculator_widgets:
             widget.hide()
 
+        # Arrangements calculator widgets
+        self.arrangementsCalculatorTotalNrOfObjectsLabel = QLabel(self)
+        self.arrangementsCalculatorTotalNrOfObjectsLabel.setText("Enter the number of objects you'd like to arrange (Ex: 8):")
+        self.arrangementsCalculatorTotalNrOfObjectsLabel.setFont(self.main_font)
+        self.arrangementsCalculatorTotalNrOfObjectsLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.arrangementsCalculatorTotalNrOfObjectsLabel.setSizePolicy(self.minimum_size_policy)
+        self.mathAppGrid.addWidget(self.arrangementsCalculatorTotalNrOfObjectsLabel, 3, 1, 1, 2)
+        # --------------------------------------------------
+        self.arrangementsCalculatorTotalNrOfObjectsLineEdit = QLineEdit(self)
+        self.arrangementsCalculatorTotalNrOfObjectsLineEdit.setFont(self.main_font)
+        self.arrangementsCalculatorTotalNrOfObjectsLineEdit.setSizePolicy(self.minimum_size_policy)
+        self.mathAppGrid.addWidget(self.arrangementsCalculatorTotalNrOfObjectsLineEdit, 3, 3, 1, 1)
+        # --------------------------------------------------
+        self.arrangementsCalculatorNrOfSpotsLabel = QLabel(self)
+        self.arrangementsCalculatorNrOfSpotsLabel.setText("Enter the number of objects a group should have (Ex: 3):")
+        self.arrangementsCalculatorNrOfSpotsLabel.setFont(self.main_font)
+        self.arrangementsCalculatorNrOfSpotsLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.arrangementsCalculatorNrOfSpotsLabel.setSizePolicy(self.minimum_size_policy)
+        self.mathAppGrid.addWidget(self.arrangementsCalculatorNrOfSpotsLabel, 5, 1, 1, 2)
+        # --------------------------------------------------
+        self.arrangementsCalculatorNrOfSpotsLineEdit = QLineEdit(self)
+        self.arrangementsCalculatorNrOfSpotsLineEdit.setFont(self.main_font)
+        self.arrangementsCalculatorNrOfSpotsLineEdit.setSizePolicy(self.minimum_size_policy)
+        self.mathAppGrid.addWidget(self.arrangementsCalculatorNrOfSpotsLineEdit, 5, 3, 1, 1)
+        # --------------------------------------------------
+        self.arrangementsCalculatorCalculateArrangementsButton = QPushButton(self)
+        self.arrangementsCalculatorCalculateArrangementsButton.setText("Calculate arrangements")
+        self.arrangementsCalculatorCalculateArrangementsButton.setSizePolicy(self.minimum_size_policy)
+        self.arrangementsCalculatorCalculateArrangementsButton.clicked.connect(self.calculate_arrangements)
+        self.mathAppGrid.addWidget(self.arrangementsCalculatorCalculateArrangementsButton, 7, 1, 1, 3)
+        # --------------------------------------------------
+        self.arrangements_calculator_widgets = [self.arrangementsCalculatorTotalNrOfObjectsLabel,
+                                                self.arrangementsCalculatorTotalNrOfObjectsLineEdit,
+                                                self.arrangementsCalculatorNrOfSpotsLabel,
+                                                self.arrangementsCalculatorNrOfSpotsLineEdit,
+                                                self.arrangementsCalculatorCalculateArrangementsButton]
+        for widget in self.arrangements_calculator_widgets:
+            widget.hide()
+
         self.probabilityAndCombinatoricsComboBox.activated.connect(
             lambda: self.draw_window(self.probabilityAndCombinatoricsComboBox.currentText()))
 
@@ -320,6 +359,13 @@ class MathApp(QMainWindow):
             self.nameOfCurrWindowLabel.setText("Permutations")
 
             for widget in self.permutations_calculator_widgets:
+                self.displayed_widgets.append(widget)
+                widget.show()
+
+        elif window_name == "Arrangements":
+            self.nameOfCurrWindowLabel.setText("Arrangements")
+
+            for widget in self.arrangements_calculator_widgets:
                 self.displayed_widgets.append(widget)
                 widget.show()
 
@@ -691,6 +737,9 @@ class MathApp(QMainWindow):
         result_label.setSizePolicy(self.minimum_size_policy)
         self.temporary_widgets.append(result_label)
         self.mathAppGrid.addWidget(result_label, 8, 1, 1, 3)
+
+    def calculate_arrangements(self):
+        pass
 
     @staticmethod
     def check_expression_mistakes(expression, is_equation=False, y_not_isolated=False, non_x_or_y_variables=False,
