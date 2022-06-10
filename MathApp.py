@@ -6,6 +6,7 @@ import sys
 import sympy
 import re
 import traceback
+import math
 
 
 class MathApp(QMainWindow):
@@ -680,6 +681,16 @@ class MathApp(QMainWindow):
             self.mathAppGrid.addWidget(warning_label, 7, 1, 1, 3)
 
             return
+
+        nr_of_objects = int(nr_of_objects)
+
+        result_label = QLabel(self)
+        result_label.setText(f"The number of permutations for {nr_of_objects} objects is {nr_of_objects}! or {math.factorial(nr_of_objects)}")
+        result_label.setFont(self.main_font)
+        result_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        result_label.setSizePolicy(self.minimum_size_policy)
+        self.temporary_widgets.append(result_label)
+        self.mathAppGrid.addWidget(result_label, 8, 1, 1, 3)
 
     @staticmethod
     def check_expression_mistakes(expression, is_equation=False, y_not_isolated=False, non_x_or_y_variables=False,
