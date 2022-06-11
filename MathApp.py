@@ -297,6 +297,46 @@ class MathApp(QMainWindow):
         for widget in self.arrangements_calculator_widgets:
             widget.hide()
 
+        # Combinations calculator widgets
+        self.combinationsCalculatorTotalNrOfObjectsLabel = QLabel(self)
+        self.combinationsCalculatorTotalNrOfObjectsLabel.setText("Enter the total number of objects you'd like to calculate the number of combinations for (Ex: 8):")
+        self.combinationsCalculatorTotalNrOfObjectsLabel.setFont(self.main_font)
+        self.combinationsCalculatorTotalNrOfObjectsLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.combinationsCalculatorTotalNrOfObjectsLabel.setSizePolicy(self.minimum_size_policy)
+        self.combinationsCalculatorTotalNrOfObjectsLabel.setStyleSheet("padding: 10px")
+        self.mathAppGrid.addWidget(self.combinationsCalculatorTotalNrOfObjectsLabel, 3, 1, 1, 2)
+        # --------------------------------------------------
+        self.combinationsCalculatorTotalNrOfObjectsLineEdit = QLineEdit(self)
+        self.combinationsCalculatorTotalNrOfObjectsLineEdit.setFont(self.main_font)
+        self.combinationsCalculatorTotalNrOfObjectsLineEdit.setSizePolicy(self.minimum_size_policy)
+        self.mathAppGrid.addWidget(self.combinationsCalculatorTotalNrOfObjectsLineEdit, 3, 3, 1, 1)
+        # --------------------------------------------------
+        self.combinationsCalculatorNrOfSpotsLabel = QLabel(self)
+        self.combinationsCalculatorNrOfSpotsLabel.setText("Enter the number of objects a group should have (Ex: 3):")
+        self.combinationsCalculatorNrOfSpotsLabel.setFont(self.main_font)
+        self.combinationsCalculatorNrOfSpotsLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.combinationsCalculatorNrOfSpotsLabel.setSizePolicy(self.minimum_size_policy)
+        self.mathAppGrid.addWidget(self.combinationsCalculatorNrOfSpotsLabel, 5, 1, 1, 2)
+        # --------------------------------------------------
+        self.combinationsCalculatorNrOfSpotsLineEdit = QLineEdit(self)
+        self.combinationsCalculatorNrOfSpotsLineEdit.setFont(self.main_font)
+        self.combinationsCalculatorNrOfSpotsLineEdit.setSizePolicy(self.minimum_size_policy)
+        self.mathAppGrid.addWidget(self.combinationsCalculatorNrOfSpotsLineEdit, 5, 3, 1, 1)
+        # --------------------------------------------------
+        self.combinationsCalculatorCalculateCombinationsButton = QPushButton(self)
+        self.combinationsCalculatorCalculateCombinationsButton.setText("Calculate combinations")
+        self.combinationsCalculatorCalculateCombinationsButton.setSizePolicy(self.minimum_size_policy)
+        self.combinationsCalculatorCalculateCombinationsButton.clicked.connect(self.calculate_combinations)
+        self.mathAppGrid.addWidget(self.combinationsCalculatorCalculateCombinationsButton, 7, 1, 1, 3)
+        # --------------------------------------------------
+        self.combinations_calculator_widgets = [self.combinationsCalculatorTotalNrOfObjectsLabel,
+                                                self.combinationsCalculatorTotalNrOfObjectsLineEdit,
+                                                self.combinationsCalculatorNrOfSpotsLabel,
+                                                self.combinationsCalculatorNrOfSpotsLineEdit,
+                                                self.combinationsCalculatorCalculateCombinationsButton]
+        for widget in self.combinations_calculator_widgets:
+            widget.hide()
+
         self.probabilityAndCombinatoricsComboBox.activated.connect(
             lambda: self.draw_window(self.probabilityAndCombinatoricsComboBox.currentText()))
 
@@ -366,6 +406,13 @@ class MathApp(QMainWindow):
             self.nameOfCurrWindowLabel.setText("Arrangements")
 
             for widget in self.arrangements_calculator_widgets:
+                self.displayed_widgets.append(widget)
+                widget.show()
+
+        elif window_name == "Combinations":
+            self.nameOfCurrWindowLabel.setText("Combinations")
+
+            for widget in self.combinations_calculator_widgets:
                 self.displayed_widgets.append(widget)
                 widget.show()
 
@@ -787,6 +834,9 @@ class MathApp(QMainWindow):
         result_label.setSizePolicy(self.minimum_size_policy)
         self.temporary_widgets.append(result_label)
         self.mathAppGrid.addWidget(result_label, 9, 1, 1, 3)
+
+    def calculate_combinations(self):
+        pass
 
     @staticmethod
     def check_expression_mistakes(expression, is_equation=False, y_not_isolated=False, non_x_or_y_variables=False,
