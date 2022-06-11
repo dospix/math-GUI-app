@@ -774,6 +774,20 @@ class MathApp(QMainWindow):
 
             return
 
+        total_nr_of_objects = int(total_nr_of_objects)
+        nr_of_objects_in_a_group = int(nr_of_objects_in_a_group)
+
+        result = math.factorial(total_nr_of_objects) / math.factorial((total_nr_of_objects - nr_of_objects_in_a_group))
+        result = int(result)
+
+        result_label = QLabel(self)
+        result_label.setText(f"{total_nr_of_objects} objects can be arranged in {result} ways in groups of {nr_of_objects_in_a_group}")
+        result_label.setFont(self.main_font)
+        result_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        result_label.setSizePolicy(self.minimum_size_policy)
+        self.temporary_widgets.append(result_label)
+        self.mathAppGrid.addWidget(result_label, 9, 1, 1, 3)
+
     @staticmethod
     def check_expression_mistakes(expression, is_equation=False, y_not_isolated=False, non_x_or_y_variables=False,
                                   non_x_variables=False, illegal_characters=False, improper_syntax=False,
