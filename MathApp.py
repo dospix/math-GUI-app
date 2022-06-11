@@ -260,7 +260,7 @@ class MathApp(QMainWindow):
 
         # Arrangements calculator widgets
         self.arrangementsCalculatorTotalNrOfObjectsLabel = QLabel(self)
-        self.arrangementsCalculatorTotalNrOfObjectsLabel.setText("Enter the number of objects you'd like to arrange (Ex: 8):")
+        self.arrangementsCalculatorTotalNrOfObjectsLabel.setText("Enter the total number of objects you'd like to arrange (Ex: 8):")
         self.arrangementsCalculatorTotalNrOfObjectsLabel.setFont(self.main_font)
         self.arrangementsCalculatorTotalNrOfObjectsLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.arrangementsCalculatorTotalNrOfObjectsLabel.setSizePolicy(self.minimum_size_policy)
@@ -739,7 +739,40 @@ class MathApp(QMainWindow):
         self.mathAppGrid.addWidget(result_label, 8, 1, 1, 3)
 
     def calculate_arrangements(self):
-        pass
+        self.clear_temporary_widgets()
+
+        total_nr_of_objects = self.arrangementsCalculatorTotalNrOfObjectsLineEdit.text().replace(" ", "")
+        nr_of_objects_in_a_group = self.arrangementsCalculatorNrOfSpotsLineEdit.text().replace(" ", "")
+
+        # This label will only be displayed if there is a warning
+        warning_label = QLabel(self)
+        warning_label.setStyleSheet("color: red;")
+        warning_label.setFont(self.main_font)
+        warning_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        warning_label.setSizePolicy(self.minimum_size_policy)
+        self.temporary_widgets.append(warning_label)
+
+        warning_needed = False
+        if len(total_nr_of_objects) == 0 or len(nr_of_objects_in_a_group) == 0:
+            warning_needed = True
+            warning_label.setText("Please fill the boxes above")
+        elif not self.is_number(total_nr_of_objects) or not self.is_number(nr_of_objects_in_a_group):
+            warning_needed = True
+            warning_label.setText("You can only use numbers in the boxes above")
+        elif total_nr_of_objects.count(".") or nr_of_objects_in_a_group.count("."):
+            warning_needed = True
+            warning_label.setText("The numbers above need to be integers")
+        elif int(total_nr_of_objects) < 1 or int(nr_of_objects_in_a_group) < 1:
+            warning_needed = True
+            warning_label.setText("The numbers above need to be bigger than 1")
+        elif int(total_nr_of_objects) < int(nr_of_objects_in_a_group):
+            warning_needed = True
+            warning_label.setText("The total number of objects can't be bigger than the number of objects in a group")
+
+        if warning_needed:
+            self.mathAppGrid.addWidget(warning_label, 8, 1, 1, 3)
+
+            return
 
     @staticmethod
     def check_expression_mistakes(expression, is_equation=False, y_not_isolated=False, non_x_or_y_variables=False,
