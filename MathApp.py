@@ -7,7 +7,7 @@ import sympy
 import re
 import traceback
 import math
-
+import mpmath
 
 class MathApp(QMainWindow):
     def __init__(self):
@@ -1079,6 +1079,80 @@ class MathApp(QMainWindow):
             self.mathAppGrid.addWidget(warning_label, 9, 1, 1, 3)
 
             return
+
+        result = ""
+        if len(sine_string):
+            if is_radians:
+                sine = mpmath.sin(float(sine_string))
+            else:
+                sine = mpmath.sin(math.radians(float(sine_string)))
+            sine = round(sine, 2)
+            if sine == int(sine):
+                sine = int(sine)
+            result += f"sine({sine_string}) = {sine}"
+        if len(cosine_string):
+            if is_radians:
+                cosine = mpmath.cos(float(cosine_string))
+            else:
+                cosine = mpmath.cos(math.radians(float(cosine_string)))
+            cosine = round(cosine, 2)
+            if cosine == int(cosine):
+                cosine = int(cosine)
+            if len(result):
+                result += " "
+            result += f"cosine({cosine_string}) = {cosine}"
+        if len(tangent_string):
+            if is_radians:
+                tangent = mpmath.tan(float(tangent_string))
+            else:
+                tangent = mpmath.tan(math.radians(float(tangent_string)))
+            tangent = round(tangent, 2)
+            if tangent == int(tangent):
+                tangent = int(tangent)
+            if len(result):
+                result += " "
+            result += f"tangent({tangent_string}) = {tangent}"
+        if len(cotangent_string):
+            if is_radians:
+                cotangent = mpmath.cot(float(cotangent_string))
+            else:
+                cotangent = mpmath.cot(math.radians(float(cotangent_string)))
+            cotangent = round(cotangent, 2)
+            if cotangent == int(cotangent):
+                cotangent = int(cotangent)
+            if len(result):
+                result += " "
+            result += f"cotangent({cotangent_string}) = {cotangent}"
+        if len(secant_string):
+            if is_radians:
+                secant = mpmath.sec(float(secant_string))
+            else:
+                secant = mpmath.sec(math.radians(float(secant_string)))
+            secant = round(secant, 2)
+            if secant == int(secant):
+                secant = int(secant)
+            if len(result):
+                result += " "
+            result += f"secant({secant_string}) = {secant}"
+        if len(cosecant_string):
+            if is_radians:
+                cosecant = mpmath.csc(float(cosecant_string))
+            else:
+                cosecant = mpmath.csc(math.radians(float(cosecant_string)))
+            cosecant = round(cosecant, 2)
+            if cosecant == int(cosecant):
+                cosecant = int(cosecant)
+            if len(result):
+                result += " "
+            result += f"cosecant({cosecant_string}) = {cosecant}"
+
+        result_label = QLabel(self)
+        result_label.setText(result)
+        result_label.setFont(self.main_font)
+        result_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        result_label.setSizePolicy(self.minimum_size_policy)
+        self.temporary_widgets.append(result_label)
+        self.mathAppGrid.addWidget(result_label, 9, 1, 1, 3)
 
     @staticmethod
     def check_expression_mistakes(expression, is_equation=False, y_not_isolated=False, non_x_or_y_variables=False,
