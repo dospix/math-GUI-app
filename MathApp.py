@@ -9,6 +9,7 @@ import traceback
 import math
 import mpmath
 
+
 class MathApp(QMainWindow):
     def __init__(self):
         super(MathApp, self).__init__()
