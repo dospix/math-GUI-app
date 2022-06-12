@@ -1042,7 +1042,43 @@ class MathApp(QMainWindow):
         self.mathAppGrid.addWidget(result_label, 9, 1, 1, 3)
 
     def calculate_trigonometric_functions(self):
-        pass
+        self.clear_temporary_widgets()
+
+        sine_string = self.trigonometricFunctionsCalculatorSineLineEdit.text()
+        cosine_string = self.trigonometricFunctionsCalculatorCosineLineEdit.text()
+        tangent_string = self.trigonometricFunctionsCalculatorTangentLineEdit.text()
+        cotangent_string = self.trigonometricFunctionsCalculatorCotangentLineEdit.text()
+        secant_string = self.trigonometricFunctionsCalculatorSecantLineEdit.text()
+        cosecant_string = self.trigonometricFunctionsCalculatorCosecantLineEdit.text()
+
+        is_degrees = self.trigonometricFunctionsCalculatorDegreesCheckBox.isChecked()
+        is_radians = self.trigonometricFunctionsCalculatorRadiansCheckBox.isChecked()
+
+        # This label will only be displayed if there is a warning
+        warning_label = QLabel(self)
+        warning_label.setStyleSheet("color: red;")
+        warning_label.setFont(self.main_font)
+        warning_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        warning_label.setSizePolicy(self.minimum_size_policy)
+        self.temporary_widgets.append(warning_label)
+
+        warning_needed = False
+        if is_degrees and is_radians:
+            warning_needed = True
+            warning_label.setText("You can only check one of the checkboxes above")
+        elif not is_degrees and not is_radians:
+            warning_needed = True
+            warning_label.setText("Please check one of the checkboxes above")
+        elif not self.is_number(sine_string, True) or not self.is_number(cosine_string, True) or \
+                not self.is_number(tangent_string, True) or not self.is_number(cotangent_string, True) or \
+                not self.is_number(secant_string, True) or not self.is_number(cosecant_string, True):
+            warning_needed = True
+            warning_label.setText("You can only enter numbers in the boxes above")
+
+        if warning_needed:
+            self.mathAppGrid.addWidget(warning_label, 9, 1, 1, 3)
+
+            return
 
     @staticmethod
     def check_expression_mistakes(expression, is_equation=False, y_not_isolated=False, non_x_or_y_variables=False,
