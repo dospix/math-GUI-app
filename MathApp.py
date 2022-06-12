@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QMainWindow, QApplication, QPushButton, QGridLayout, QLabel, QComboBox, QLineEdit, QSizePolicy
+from PyQt6.QtWidgets import QMainWindow, QApplication, QPushButton, QGridLayout, QLabel, QComboBox, QLineEdit, QCheckBox, QSizePolicy
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QFont
 from PyQt6 import uic
@@ -34,7 +34,7 @@ class MathApp(QMainWindow):
         self.trigonometryComboBox = self.findChild(QComboBox, "trigonometryComboBox")
 
         self.main_font = QFont()
-        self.main_font.setPointSize(11)
+        self.main_font.setPointSize(13)
 
         self.disclaimer_font = QFont()
         self.disclaimer_font.setPointSize(10)
@@ -45,6 +45,7 @@ class MathApp(QMainWindow):
         self.create_algebra_widgets()
         self.create_calculus_widgets()
         self.create_probability_and_combinatorics_widgets()
+        self.create_trigonometry_widgets()
 
         self.show()
 
@@ -64,6 +65,7 @@ class MathApp(QMainWindow):
         # --------------------------------------------------
         self.expressionSimplifierSimplifyExpressionButton = QPushButton(self)
         self.expressionSimplifierSimplifyExpressionButton.setText("Simplify expression")
+        self.expressionSimplifierSimplifyExpressionButton.setFont(self.main_font)
         self.expressionSimplifierSimplifyExpressionButton.setSizePolicy(self.minimum_size_policy)
         self.expressionSimplifierSimplifyExpressionButton.clicked.connect(self.simplify_expression)
         self.mathAppGrid.addWidget(self.expressionSimplifierSimplifyExpressionButton, 7, 1, 1, 3)
@@ -96,6 +98,7 @@ class MathApp(QMainWindow):
         # --------------------------------------------------
         self.polynomialRootsCalculateRootsButton = QPushButton(self)
         self.polynomialRootsCalculateRootsButton.setText("Calculate roots")
+        self.polynomialRootsCalculateRootsButton.setFont(self.main_font)
         self.polynomialRootsCalculateRootsButton.setSizePolicy(self.minimum_size_policy)
         self.polynomialRootsCalculateRootsButton.clicked.connect(self.calculate_roots_for_polynomial)
         self.mathAppGrid.addWidget(self.polynomialRootsCalculateRootsButton, 7, 1, 1, 3)
@@ -138,6 +141,7 @@ class MathApp(QMainWindow):
         # --------------------------------------------------
         self.derivativeCalculatorCalculateDerivativeButton = QPushButton(self)
         self.derivativeCalculatorCalculateDerivativeButton.setText("Calculate derivative")
+        self.derivativeCalculatorCalculateDerivativeButton.setFont(self.main_font)
         self.derivativeCalculatorCalculateDerivativeButton.setSizePolicy(self.minimum_size_policy)
         self.derivativeCalculatorCalculateDerivativeButton.clicked.connect(self.calculate_derivative)
         self.mathAppGrid.addWidget(self.derivativeCalculatorCalculateDerivativeButton, 8, 1, 1, 3)
@@ -178,6 +182,7 @@ class MathApp(QMainWindow):
         # --------------------------------------------------
         self.integralCalculatorCalculateIntegralButton = QPushButton(self)
         self.integralCalculatorCalculateIntegralButton.setText("Calculate integral")
+        self.integralCalculatorCalculateIntegralButton.setFont(self.main_font)
         self.integralCalculatorCalculateIntegralButton.setSizePolicy(self.minimum_size_policy)
         self.integralCalculatorCalculateIntegralButton.clicked.connect(self.calculate_integral)
         self.mathAppGrid.addWidget(self.integralCalculatorCalculateIntegralButton, 8, 1, 1, 3)
@@ -221,6 +226,7 @@ class MathApp(QMainWindow):
         # --------------------------------------------------
         self.percentageCalculatorCalculatePercentageButton = QPushButton(self)
         self.percentageCalculatorCalculatePercentageButton.setText("Calculate percentage")
+        self.percentageCalculatorCalculatePercentageButton.setFont(self.main_font)
         self.percentageCalculatorCalculatePercentageButton.setSizePolicy(self.minimum_size_policy)
         self.percentageCalculatorCalculatePercentageButton.clicked.connect(self.calculate_percentage)
         self.mathAppGrid.addWidget(self.percentageCalculatorCalculatePercentageButton, 7, 1, 1, 3)
@@ -248,6 +254,7 @@ class MathApp(QMainWindow):
         # --------------------------------------------------
         self.permutationsCalculatorCalculatePermutationsButton = QPushButton(self)
         self.permutationsCalculatorCalculatePermutationsButton.setText("Calculate permutations")
+        self.permutationsCalculatorCalculatePermutationsButton.setFont(self.main_font)
         self.permutationsCalculatorCalculatePermutationsButton.setSizePolicy(self.minimum_size_policy)
         self.permutationsCalculatorCalculatePermutationsButton.clicked.connect(self.calculate_permutations)
         self.mathAppGrid.addWidget(self.permutationsCalculatorCalculatePermutationsButton, 6, 1, 1, 3)
@@ -285,6 +292,7 @@ class MathApp(QMainWindow):
         # --------------------------------------------------
         self.arrangementsCalculatorCalculateArrangementsButton = QPushButton(self)
         self.arrangementsCalculatorCalculateArrangementsButton.setText("Calculate arrangements")
+        self.arrangementsCalculatorCalculateArrangementsButton.setFont(self.main_font)
         self.arrangementsCalculatorCalculateArrangementsButton.setSizePolicy(self.minimum_size_policy)
         self.arrangementsCalculatorCalculateArrangementsButton.clicked.connect(self.calculate_arrangements)
         self.mathAppGrid.addWidget(self.arrangementsCalculatorCalculateArrangementsButton, 7, 1, 1, 3)
@@ -325,6 +333,7 @@ class MathApp(QMainWindow):
         # --------------------------------------------------
         self.combinationsCalculatorCalculateCombinationsButton = QPushButton(self)
         self.combinationsCalculatorCalculateCombinationsButton.setText("Calculate combinations")
+        self.combinationsCalculatorCalculateCombinationsButton.setFont(self.main_font)
         self.combinationsCalculatorCalculateCombinationsButton.setSizePolicy(self.minimum_size_policy)
         self.combinationsCalculatorCalculateCombinationsButton.clicked.connect(self.calculate_combinations)
         self.mathAppGrid.addWidget(self.combinationsCalculatorCalculateCombinationsButton, 7, 1, 1, 3)
@@ -339,6 +348,146 @@ class MathApp(QMainWindow):
 
         self.probabilityAndCombinatoricsComboBox.activated.connect(
             lambda: self.draw_window(self.probabilityAndCombinatoricsComboBox.currentText()))
+
+    def create_trigonometry_widgets(self):
+        # Trigonometric functions calculator widgets
+        self.trigonometricFunctionsCalculatorSineLabel = QLabel(self)
+        self.trigonometricFunctionsCalculatorSineLabel.setText("Sine:")
+        self.trigonometricFunctionsCalculatorSineLabel.setFont(self.main_font)
+        self.trigonometricFunctionsCalculatorSineLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.trigonometricFunctionsCalculatorSineLabel.setSizePolicy(self.minimum_size_policy)
+        self.trigonometricFunctionsCalculatorSineLabel.setStyleSheet("margin-left: 65")
+        self.mathAppGrid.addWidget(self.trigonometricFunctionsCalculatorSineLabel, 3, 0, 1, 1)
+        # --------------------------------------------------
+        self.trigonometricFunctionsCalculatorSineLineEdit = QLineEdit(self)
+        self.trigonometricFunctionsCalculatorSineLineEdit.setFont(self.main_font)
+        self.trigonometricFunctionsCalculatorSineLineEdit.setSizePolicy(self.minimum_size_policy)
+        self.mathAppGrid.addWidget(self.trigonometricFunctionsCalculatorSineLineEdit, 3, 1, 1, 1)
+        # --------------------------------------------------
+        self.trigonometricFunctionsCalculatorCosineLabel = QLabel(self)
+        self.trigonometricFunctionsCalculatorCosineLabel.setText("Cosine:")
+        self.trigonometricFunctionsCalculatorCosineLabel.setFont(self.main_font)
+        self.trigonometricFunctionsCalculatorCosineLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.trigonometricFunctionsCalculatorCosineLabel.setSizePolicy(self.minimum_size_policy)
+        self.trigonometricFunctionsCalculatorCosineLabel.setStyleSheet("margin-left: 45")
+        self.mathAppGrid.addWidget(self.trigonometricFunctionsCalculatorCosineLabel, 3, 2, 1, 1)
+        # --------------------------------------------------
+        self.trigonometricFunctionsCalculatorCosineLineEdit = QLineEdit(self)
+        self.trigonometricFunctionsCalculatorCosineLineEdit.setFont(self.main_font)
+        self.trigonometricFunctionsCalculatorCosineLineEdit.setSizePolicy(self.minimum_size_policy)
+        self.mathAppGrid.addWidget(self.trigonometricFunctionsCalculatorCosineLineEdit, 3, 3, 1, 1)
+        # --------------------------------------------------
+        self.trigonometricFunctionsCalculatorTangentLabel = QLabel(self)
+        self.trigonometricFunctionsCalculatorTangentLabel.setText("Tangent:")
+        self.trigonometricFunctionsCalculatorTangentLabel.setFont(self.main_font)
+        self.trigonometricFunctionsCalculatorTangentLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.trigonometricFunctionsCalculatorTangentLabel.setSizePolicy(self.minimum_size_policy)
+        self.trigonometricFunctionsCalculatorTangentLabel.setStyleSheet("margin: 10 0 0 65")
+        self.mathAppGrid.addWidget(self.trigonometricFunctionsCalculatorTangentLabel, 4, 0, 1, 1)
+        # --------------------------------------------------
+        self.trigonometricFunctionsCalculatorTangentLineEdit = QLineEdit(self)
+        self.trigonometricFunctionsCalculatorTangentLineEdit.setFont(self.main_font)
+        self.trigonometricFunctionsCalculatorTangentLineEdit.setSizePolicy(self.minimum_size_policy)
+        self.trigonometricFunctionsCalculatorTangentLineEdit.setStyleSheet("margin: 10 0 0 0;")
+        self.mathAppGrid.addWidget(self.trigonometricFunctionsCalculatorTangentLineEdit, 4, 1, 1, 1)
+        # --------------------------------------------------
+        self.trigonometricFunctionsCalculatorCotangentLabel = QLabel(self)
+        self.trigonometricFunctionsCalculatorCotangentLabel.setText("Cotangent:")
+        self.trigonometricFunctionsCalculatorCotangentLabel.setFont(self.main_font)
+        self.trigonometricFunctionsCalculatorCotangentLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.trigonometricFunctionsCalculatorCotangentLabel.setSizePolicy(self.minimum_size_policy)
+        self.trigonometricFunctionsCalculatorCotangentLabel.setStyleSheet("margin: 10 0 0 45")
+        self.mathAppGrid.addWidget(self.trigonometricFunctionsCalculatorCotangentLabel, 4, 2, 1, 1)
+        # --------------------------------------------------
+        self.trigonometricFunctionsCalculatorCotangentLineEdit = QLineEdit(self)
+        self.trigonometricFunctionsCalculatorCotangentLineEdit.setFont(self.main_font)
+        self.trigonometricFunctionsCalculatorCotangentLineEdit.setSizePolicy(self.minimum_size_policy)
+        self.trigonometricFunctionsCalculatorCotangentLineEdit.setStyleSheet("margin: 10 0 0 0;")
+        self.mathAppGrid.addWidget(self.trigonometricFunctionsCalculatorCotangentLineEdit, 4, 3, 1, 1)
+        # --------------------------------------------------
+        self.trigonometricFunctionsCalculatorSecantLabel = QLabel(self)
+        self.trigonometricFunctionsCalculatorSecantLabel.setText("Secant:")
+        self.trigonometricFunctionsCalculatorSecantLabel.setFont(self.main_font)
+        self.trigonometricFunctionsCalculatorSecantLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.trigonometricFunctionsCalculatorSecantLabel.setSizePolicy(self.minimum_size_policy)
+        self.trigonometricFunctionsCalculatorSecantLabel.setStyleSheet("margin: 10 0 0 65")
+        self.mathAppGrid.addWidget(self.trigonometricFunctionsCalculatorSecantLabel, 5, 0, 1, 1)
+        # --------------------------------------------------
+        self.trigonometricFunctionsCalculatorSecantLineEdit = QLineEdit(self)
+        self.trigonometricFunctionsCalculatorSecantLineEdit.setFont(self.main_font)
+        self.trigonometricFunctionsCalculatorSecantLineEdit.setSizePolicy(self.minimum_size_policy)
+        self.trigonometricFunctionsCalculatorSecantLineEdit.setStyleSheet("margin: 10 0 0 0;")
+        self.mathAppGrid.addWidget(self.trigonometricFunctionsCalculatorSecantLineEdit, 5, 1, 1, 1)
+        # --------------------------------------------------
+        self.trigonometricFunctionsCalculatorCosecantLabel = QLabel(self)
+        self.trigonometricFunctionsCalculatorCosecantLabel.setText("Cosecant:")
+        self.trigonometricFunctionsCalculatorCosecantLabel.setFont(self.main_font)
+        self.trigonometricFunctionsCalculatorCosecantLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.trigonometricFunctionsCalculatorCosecantLabel.setSizePolicy(self.minimum_size_policy)
+        self.trigonometricFunctionsCalculatorCosecantLabel.setStyleSheet("margin: 10 0 0 45")
+        self.mathAppGrid.addWidget(self.trigonometricFunctionsCalculatorCosecantLabel, 5, 2, 1, 1)
+        # --------------------------------------------------
+        self.trigonometricFunctionsCalculatorCosecantLineEdit = QLineEdit(self)
+        self.trigonometricFunctionsCalculatorCosecantLineEdit.setFont(self.main_font)
+        self.trigonometricFunctionsCalculatorCosecantLineEdit.setSizePolicy(self.minimum_size_policy)
+        self.trigonometricFunctionsCalculatorCosecantLineEdit.setStyleSheet("margin: 10 0 0 0;")
+        self.mathAppGrid.addWidget(self.trigonometricFunctionsCalculatorCosecantLineEdit, 5, 3, 1, 1)
+        # --------------------------------------------------
+        self.trigonometricFunctionsCalculatorDegreesLabel = QLabel(self)
+        self.trigonometricFunctionsCalculatorDegreesLabel.setText("Degrees:")
+        self.trigonometricFunctionsCalculatorDegreesLabel.setFont(self.main_font)
+        self.trigonometricFunctionsCalculatorDegreesLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.trigonometricFunctionsCalculatorDegreesLabel.setSizePolicy(self.minimum_size_policy)
+        self.trigonometricFunctionsCalculatorDegreesLabel.setStyleSheet("margin-left: 65")
+        self.mathAppGrid.addWidget(self.trigonometricFunctionsCalculatorDegreesLabel, 6, 0, 1, 1)
+        # --------------------------------------------------
+        self.trigonometricFunctionsCalculatorDegreesCheckBox = QCheckBox(self)
+        self.trigonometricFunctionsCalculatorDegreesCheckBox.setSizePolicy(self.minimum_size_policy)
+        self.trigonometricFunctionsCalculatorDegreesCheckBox.setStyleSheet("margin-top: 5")
+        self.mathAppGrid.addWidget(self.trigonometricFunctionsCalculatorDegreesCheckBox, 6, 1, 1, 1)
+        # --------------------------------------------------
+        self.trigonometricFunctionsCalculatorRadiansLabel = QLabel(self)
+        self.trigonometricFunctionsCalculatorRadiansLabel.setText("Radians:")
+        self.trigonometricFunctionsCalculatorRadiansLabel.setFont(self.main_font)
+        self.trigonometricFunctionsCalculatorRadiansLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.trigonometricFunctionsCalculatorRadiansLabel.setSizePolicy(self.minimum_size_policy)
+        self.trigonometricFunctionsCalculatorRadiansLabel.setStyleSheet("margin-left: 65")
+        self.mathAppGrid.addWidget(self.trigonometricFunctionsCalculatorRadiansLabel, 6, 2, 1, 1)
+        # --------------------------------------------------
+        self.trigonometricFunctionsCalculatorRadiansCheckBox = QCheckBox(self)
+        self.trigonometricFunctionsCalculatorRadiansCheckBox.setSizePolicy(self.minimum_size_policy)
+        self.trigonometricFunctionsCalculatorRadiansCheckBox.setStyleSheet("margin-top: 3")
+        self.mathAppGrid.addWidget(self.trigonometricFunctionsCalculatorRadiansCheckBox, 6, 3, 1, 1)
+        # --------------------------------------------------
+        self.trigonometricFunctionsCalculatorCalculateButton = QPushButton(self)
+        self.trigonometricFunctionsCalculatorCalculateButton.setText("Calculate")
+        self.trigonometricFunctionsCalculatorCalculateButton.setFont(self.main_font)
+        self.trigonometricFunctionsCalculatorCalculateButton.setSizePolicy(self.minimum_size_policy)
+        self.trigonometricFunctionsCalculatorCalculateButton.setStyleSheet("margin: 20 10 20 10")
+        self.trigonometricFunctionsCalculatorCalculateButton.clicked.connect(self.calculate_trigonometric_functions)
+        self.mathAppGrid.addWidget(self.trigonometricFunctionsCalculatorCalculateButton, 7, 1, 2, 3)
+        # --------------------------------------------------
+        self.trigonometry_calculator_widgets = [self.trigonometricFunctionsCalculatorSineLabel,
+                                                self.trigonometricFunctionsCalculatorSineLineEdit,
+                                                self.trigonometricFunctionsCalculatorCosineLabel,
+                                                self.trigonometricFunctionsCalculatorCosineLineEdit,
+                                                self.trigonometricFunctionsCalculatorTangentLabel,
+                                                self.trigonometricFunctionsCalculatorTangentLineEdit,
+                                                self.trigonometricFunctionsCalculatorCotangentLabel,
+                                                self.trigonometricFunctionsCalculatorCotangentLineEdit,
+                                                self.trigonometricFunctionsCalculatorSecantLabel,
+                                                self.trigonometricFunctionsCalculatorSecantLineEdit,
+                                                self.trigonometricFunctionsCalculatorCosecantLabel,
+                                                self.trigonometricFunctionsCalculatorCosecantLineEdit,
+                                                self.trigonometricFunctionsCalculatorDegreesLabel,
+                                                self.trigonometricFunctionsCalculatorDegreesCheckBox,
+                                                self.trigonometricFunctionsCalculatorRadiansLabel,
+                                                self.trigonometricFunctionsCalculatorRadiansCheckBox,
+                                                self.trigonometricFunctionsCalculatorCalculateButton]
+        for widget in self.trigonometry_calculator_widgets:
+            widget.hide()
+
+        self.trigonometryComboBox.activated.connect(lambda: self.draw_window(self.trigonometryComboBox.currentText()))
 
     def clear_window(self):
         for widget in self.displayed_widgets:
@@ -413,6 +562,13 @@ class MathApp(QMainWindow):
             self.nameOfCurrWindowLabel.setText("Combinations")
 
             for widget in self.combinations_calculator_widgets:
+                self.displayed_widgets.append(widget)
+                widget.show()
+
+        elif window_name == "Sine/Cosine/... calculator":
+            self.nameOfCurrWindowLabel.setText("Sine/Cosine/... calculator")
+
+            for widget in self.trigonometry_calculator_widgets:
                 self.displayed_widgets.append(widget)
                 widget.show()
 
@@ -884,6 +1040,9 @@ class MathApp(QMainWindow):
         result_label.setSizePolicy(self.minimum_size_policy)
         self.temporary_widgets.append(result_label)
         self.mathAppGrid.addWidget(result_label, 9, 1, 1, 3)
+
+    def calculate_trigonometric_functions(self):
+        pass
 
     @staticmethod
     def check_expression_mistakes(expression, is_equation=False, y_not_isolated=False, non_x_or_y_variables=False,
